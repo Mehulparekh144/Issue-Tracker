@@ -1,7 +1,9 @@
-import { SupabaseAdapter } from '@auth/supabase-adapter'
 import NextAuth from 'next-auth/next'
 import Google from 'next-auth/providers/google'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import { PrismaClient } from '@prisma/client'
 
+const prisma = new PrismaClient()
 const handler = NextAuth({
   providers: [
     Google({
@@ -9,8 +11,7 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
     })
   ],
-  adapter: SupabaseAdapter({
-    url: process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    secret: process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
-  })
+  adapter: PrismaAdapter(prisma)
 })
+
+export { handler as GET, handler as POST };
