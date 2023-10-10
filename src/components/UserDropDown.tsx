@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { signOut } from "next-auth/react";
@@ -21,10 +21,14 @@ function UserDropDown({ image, name }: UserProps) {
           <AvatarFallback>{name}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="mt-2">
+        <DropdownMenuLabel>
+        <Link href={"/"}>Profile</Link>
+        </DropdownMenuLabel>
         <DropdownMenuLabel>
         <Link href={"/"}>Dashboard</Link>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator/>
         <DropdownMenuLabel asChild>
         <Button variant={"ghost"} onClick={()=>signOut()}><LogOut className="h-4 w-4 mr-2"/>Logout</Button>
         </DropdownMenuLabel>

@@ -7,8 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { LogOut, Menu } from "lucide-react";
-import { Switch } from "./ui/switch";
+import { LogOut, Menu, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -40,31 +39,44 @@ function NavbarDropdown() {
         <DropdownMenuSeparator />
 
         {session?.user ? (
-          <DropdownMenuLabel asChild>
-            <Button variant={"ghost"} onClick={() => signOut()}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </Button>
-          </DropdownMenuLabel>
-        ) : (
           <>
             <DropdownMenuLabel>
-              <Link href="/">
-                Get Started &rarr;
-              </Link>
+              <Link href={"/"}>Profile</Link>
             </DropdownMenuLabel>
+            <DropdownMenuLabel>
+              <Link href={"/"}>Dashboard</Link>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator/>
             <DropdownMenuLabel asChild>
-              <SignupButton />
+              <Button variant={"ghost"} onClick={() => signOut()}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
             </DropdownMenuLabel>
           </>
+        ) : (
+          <DropdownMenuLabel asChild>
+            <SignupButton />
+          </DropdownMenuLabel>
         )}
-        <DropdownMenuLabel>
-          <Switch
-            value={theme}
+        <DropdownMenuLabel asChild> 
+          <button
+            className="flex items-center gap-2"
+            aria-label={theme}
             onClick={() => {
               theme === "light" ? setTheme("dark") : setTheme("light");
             }}
-          />
+          >
+            {theme === "light" ? (
+              <>
+                <MoonIcon /> Enable Dark Mode
+              </>
+            ) : (
+              <>
+                <SunIcon /> Enable Light Mode
+              </>
+            )}
+          </button>
         </DropdownMenuLabel>
       </DropdownMenuContent>
     </DropdownMenu>

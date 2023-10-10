@@ -1,22 +1,22 @@
 "use client";
 import React from "react";
-import { Button, buttonVariants } from "./ui/button";
 import Link from "next/link";
 import MaxWidthWrapper from "./MaxWidthWrapper";
-import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
-import { Switch } from "./ui/switch";
 import NavbarDropdown from "./NavbarDropdown";
 import SignupButton from "./SignupButton";
 import { useSession } from "next-auth/react";
 import UserDropDown from "./UserDropDown";
+import { Loader2, MoonIcon, SunIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import { Switch } from "./ui/switch";
 
 function Navbar() {
   const { theme, setTheme } = useTheme();
   const { data: session } = useSession();
   return (
-    <nav className="min-h-10 sticky inset-0 dark z-30 backdrop-blur-md shadow-sm transition-all ">
-      <MaxWidthWrapper className="flex flex-row items-center justify-between gap-4 py-2 ">
+    <nav className="sticky inset-0  z-30 backdrop-blur-md shadow-sm dark:shadow-xl transition-all ">
+      <MaxWidthWrapper className="flex flex-row items-center justify-between gap-4 py-2 px-6 ">
         <div>
           <h1 className="text-lg font-semibold font-display">ProTrackr.</h1>
         </div>
@@ -25,33 +25,19 @@ function Navbar() {
           <Link href={"/"}>About Us</Link>
           <Link href={"/"}>Contact Us</Link>
         </div>
-        <div className="hidden lg:flex flex-row items-center gap-3 ">
+        <div className="hidden lg:flex flex-row items-center gap-4 ">
           {session && session.user ? (
-            <UserDropDown image={session.user.image??""} name={session.user.name??""} />
+            <UserDropDown
+              image={session.user.image ?? ""}
+              name={session.user.name ?? ""}
+            />
           ) : (
             <>
-              <SignupButton />
-              <Link
-                href={"/"}
-                className={cn(
-                  buttonVariants({
-                    variant: "default",
-                    size: "sm",
-                  }),
-                  "font-medium"
-                )}
-              >
-                Get Started &rarr;
-              </Link>
+            <SignupButton /> 
             </>
           )}
-
-          <Switch
-            value={theme}
-            onClick={() => {
-              theme === "light" ? setTheme("dark") : setTheme("light");
-            }}
-          />
+          
+          <Switch value={theme} onClick={()=>{theme === 'light' ? setTheme("dark") : setTheme("light") }} />
         </div>
 
         <div className="lg:hidden">

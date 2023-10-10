@@ -16,7 +16,7 @@ function SignupButton() {
       }}
     >
       <DialogTrigger onClick={() => setIsOpen(true)} asChild>
-        <Button size="sm">Sign in</Button>
+        <Button variant={"ghost"}>Sign in</Button>
       </DialogTrigger>
 
       <DialogContent>
