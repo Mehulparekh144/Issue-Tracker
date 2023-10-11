@@ -23,10 +23,10 @@ function UserDropDown({ image, name }: UserProps) {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mt-2">
         <DropdownMenuLabel>
-        <Link href={"/"}>Profile</Link>
+        <Link href={"/profile"}>Profile</Link>
         </DropdownMenuLabel>
         <DropdownMenuLabel>
-        <Link href={"/"}>Dashboard</Link>
+        <Link href={"/dashboard"}>Dashboard</Link>
         </DropdownMenuLabel>
         <DropdownMenuSeparator/>
         <DropdownMenuLabel asChild>

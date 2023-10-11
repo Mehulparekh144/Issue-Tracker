@@ -32,21 +32,27 @@ function NavbarDropdown() {
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Home</DropdownMenuLabel>
-        <DropdownMenuLabel>About us</DropdownMenuLabel>
-        <DropdownMenuLabel>Contact</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          <Link href={"/home"}>Home</Link>
+        </DropdownMenuLabel>
+        <DropdownMenuLabel>
+          <Link href={"/about"}>About us</Link>
+        </DropdownMenuLabel>
+        <DropdownMenuLabel>
+          <Link href={"/contact"}>Contact</Link>
+        </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
 
         {session?.user ? (
           <>
             <DropdownMenuLabel>
-              <Link href={"/"}>Profile</Link>
+              <Link href={"/profile"}>Profile</Link>
             </DropdownMenuLabel>
             <DropdownMenuLabel>
-              <Link href={"/"}>Dashboard</Link>
+              <Link href={"/dashboard"}>Dashboard</Link>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator/>
+            <DropdownMenuSeparator />
             <DropdownMenuLabel asChild>
               <Button variant={"ghost"} onClick={() => signOut()}>
                 <LogOut className="h-4 w-4 mr-2" />
@@ -55,11 +61,11 @@ function NavbarDropdown() {
             </DropdownMenuLabel>
           </>
         ) : (
-          <DropdownMenuLabel asChild>
+          <DropdownMenuLabel>
             <SignupButton />
           </DropdownMenuLabel>
         )}
-        <DropdownMenuLabel asChild> 
+        <DropdownMenuLabel asChild>
           <button
             className="flex items-center gap-2"
             aria-label={theme}

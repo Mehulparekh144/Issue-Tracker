@@ -17,13 +17,14 @@ const Page = () => {
       }
     },
     onError: (err) => {
-      console.log(err.data);
       if (err.data?.code === "UNAUTHORIZED") {
         toast.error("Unauthorized, Please login.");
         router.push("/");
       }
-      toast.error("Internal server error, try again later.");
-      router.push("/");
+      else{
+        toast.error("Internal server error, try again later.");
+        router.push("/");
+      }
 
     },
   });

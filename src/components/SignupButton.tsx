@@ -20,7 +20,12 @@ function SignupButton() {
       </DialogTrigger>
 
       <DialogContent>
-        <Button className="flex items-center justify-center gap-4 mt-4 font-bold" onClick={() => signIn("google")}><AiOutlineGoogle className="h-6 w-6"/> Sign in with Google</Button>
+        <Button
+          className="flex items-center justify-center gap-4 mt-4 font-bold"
+          onClick={() => signIn("google")}
+        >
+          <AiOutlineGoogle className="h-6 w-6" /> Sign in with Google
+        </Button>
       </DialogContent>
     </Dialog>
   );

@@ -1,9 +1,11 @@
 "use client";
 import Main from "@/components/home/Main";
+
 export default function Home() {
   return (
     <div className="relative w-full inset-0 top-0 min-h-screen px-8 md:px-24 lg:px-32">
       <Main />
+
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 -top-80 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80 "

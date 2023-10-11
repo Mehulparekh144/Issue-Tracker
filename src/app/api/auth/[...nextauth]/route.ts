@@ -11,9 +11,14 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
     })
   ],
+  pages: {
+    error: '/',
+    signIn: '/dashboard',
+    signOut : '/'
+  },
   adapter: PrismaAdapter(prisma)
 }
 
-const handler = NextAuth(authOptions)
+const AuthHandler = NextAuth(authOptions,)
 
-export { handler as GET, handler as POST };
+export { AuthHandler as GET, AuthHandler as POST };
