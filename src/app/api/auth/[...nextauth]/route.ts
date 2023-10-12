@@ -13,8 +13,7 @@ export const authOptions = {
   ],
   pages: {
     error: '/',
-    signIn: '/dashboard',
-    signOut : '/'
+    signOut: '/'
   },
   adapter: PrismaAdapter(prisma)
 }

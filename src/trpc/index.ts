@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { publicProcedure, router } from "./trpc";
+import { privateProcedure, publicProcedure, router } from "./trpc";
 import { useSession } from "next-auth/react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -7,13 +7,8 @@ import { db } from "@/db";
 
 export const appRouter = router({
   //Routes
-  test: publicProcedure.query(() => {
-    return { success: true }
-  }),
   authCallback: publicProcedure.query(async () => {
     const session = await getServerSession(authOptions);
-
-
     if (!session) {
       throw new TRPCError({ code: "UNAUTHORIZED" })
     }
@@ -29,6 +24,11 @@ export const appRouter = router({
     }
 
     return { success: true }
+  })
+  ,
+  getUsersWithNoTeam: privateProcedure.query(async () => {
+    const dbUsers = await db.user.findMany();
+    return dbUsers.filter((item)=>item.teamId === null)
   })
 })
 

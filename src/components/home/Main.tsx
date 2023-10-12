@@ -5,7 +5,7 @@ import { buttonVariants } from "../ui/button";
 
 function Main() {
   return (
-    <div className="bg-transparent flex flex-col items-center gap-6 justify-start mt-28 h-screen">
+    <div className="bg-transparent flex flex-col items-center gap-6 justify-start mt-28 ">
       <div className="bg-zinc-100 dark:bg-zinc-900 dark:ring-zinc-700 text-sm font-medium shadow-md dark:gray rounded-full ring-1 ring-zinc-200 px-8 py-1">
         New way to manage your issues
       </div>

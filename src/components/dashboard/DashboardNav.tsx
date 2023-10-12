@@ -37,7 +37,7 @@ function DashboardNav({ image, name, email }: UserProps) {
       <div className="h-full flex flex-col w-max items-center justify-between">
         <div className="flex-0 w-full flex flex-col items-center ">
           {navItems.map((item) => {
-            const isActive = pathName === item.link           
+            const isActive = pathName === item.link || item.link === "/dashboard/add" && pathName.includes(item.link)          
             
 
             return (

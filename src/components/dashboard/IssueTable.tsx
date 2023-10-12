@@ -21,7 +21,7 @@ interface IssueData {
 }
 
 function IssueTable() {
-  const priorityObject : {[key:string] : string} = {
+  const priorityObject: { [key: string]: string } = {
     urgent: "bg-red-500",
     high: "bg-yellow-500",
     medium: "bg-blue-500",
@@ -77,40 +77,42 @@ function IssueTable() {
   ];
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px] ">Issue No.</TableHead>
-          <TableHead>Issue Title</TableHead>
-          <TableHead>Team Assigned</TableHead>
-          <TableHead>Assigner</TableHead>
-          <TableHead>Assigned Date</TableHead>
-          <TableHead>Deadline Date</TableHead>
-          <TableHead className="text-right">Priority</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {dummyData.map((item: IssueData) => (
-          <TableRow key={item.issueNo}>
-            <TableCell>{item.issueNo}</TableCell>
-            <TableCell>{item.issueTitle}</TableCell>
-            <TableCell>{item.teamAssigned}</TableCell>
-            <TableCell>{item.assigner}</TableCell>
-            <TableCell>{item.assignedDate}</TableCell>
-            <TableCell>{item.deadlineDate}</TableCell>
-            <TableCell className="text-right">
-              <Badge
-                className={`${priorityObject[item.priority]} hover:bg-${
-                  priorityObject[item.priority]
-                }`}
-              >
-                {item.priority}
-              </Badge>
-            </TableCell>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px] ">Issue No.</TableHead>
+            <TableHead>Issue Title</TableHead>
+            <TableHead>Team Assigned</TableHead>
+            <TableHead>Assigner</TableHead>
+            <TableHead>Assigned Date</TableHead>
+            <TableHead>Deadline Date</TableHead>
+            <TableHead className="text-right">Priority</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {dummyData.map((item: IssueData) => (
+            <TableRow key={item.issueNo}>
+              <TableCell>{item.issueNo}</TableCell>
+              <TableCell>{item.issueTitle}</TableCell>
+              <TableCell>{item.teamAssigned}</TableCell>
+              <TableCell>{item.assigner}</TableCell>
+              <TableCell>{item.assignedDate}</TableCell>
+              <TableCell>{item.deadlineDate}</TableCell>
+              <TableCell className="text-right">
+                <Badge
+                  className={`${priorityObject[item.priority]} hover:bg-${
+                    priorityObject[item.priority]
+                  }`}
+                >
+                  {item.priority}
+                </Badge>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
   );
 }
 
