@@ -13,6 +13,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  password      String?
   accounts      Account[]
   sessions      Session[]
   team          Team?     @relation(fields: [teamId], references: [id])
@@ -72,5 +73,5 @@ model Team {
   name   String
   size   Int     @default(0)
   users  User[]
-  issues Issue[] 
+  issues Issue[]
 }

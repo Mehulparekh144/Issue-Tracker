@@ -11,7 +11,7 @@ const Page = () => {
   const origin = searchParams.get("origin");
 
   trpc.authCallback.useQuery(undefined, {
-    onSuccess: ({ success }) => {
+    onSuccess: ({ success }) => {      
       if (success) {
         router.push(origin ? `/${origin}` : "/dashboard");
       }

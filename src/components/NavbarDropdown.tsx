@@ -23,7 +23,7 @@ function NavbarDropdown() {
         {session?.user ? (
           <Avatar className="cursor-pointer h-8 w-8 ring-2 ring-primary">
             <AvatarImage src={session.user.image ?? ""} />
-            <AvatarFallback>{session.user.name}</AvatarFallback>
+            <AvatarFallback>{session.user.name?.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
         ) : (
           <Button variant="ghost">
