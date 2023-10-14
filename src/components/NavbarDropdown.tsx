@@ -54,7 +54,7 @@ function NavbarDropdown() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuLabel asChild>
-              <Button variant={"ghost"} onClick={() => signOut()}>
+              <Button variant={"ghost"} onClick={() => signOut({callbackUrl : "/"})}>
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </Button>
