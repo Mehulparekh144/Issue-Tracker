@@ -5,6 +5,9 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { z } from 'zod';
 import { db } from "@/db";
 import bcrypt from 'bcrypt';
+import { userObjectSchema } from "@/lib/userSchema";
+
+
 
 export const appRouter = router({
   //Routes
@@ -27,10 +30,10 @@ export const appRouter = router({
     return { success: true }
   })
   ,
-  getUsersWithNoTeam: privateProcedure.query(async ({ctx}) => {
-    const {user} = ctx
+  getUsersWithNoTeam: privateProcedure.query(async ({ ctx }) => {
+    const { user } = ctx
     const dbUsers = await db.user.findMany();
-    return dbUsers.filter((item) => item.teamId === null && item.email != user.email )
+    return dbUsers.filter((item) => item.teamId === null && item.email != user.email)
   })
   ,
   registerUser: publicProcedure.input(z.object({
@@ -59,6 +62,33 @@ export const appRouter = router({
       })
     }
     return { success: true }
+  })
+  ,
+
+  createNewTeam: privateProcedure.input(z.object({
+    teamName: z.string(),
+    selectedUsers: z.array(userObjectSchema)
+  })).mutation(async ({ input, ctx }) => {
+    const { teamName, selectedUsers } = input
+    const teams = await db.team.findFirst({
+      where : {
+        name : teamName
+      }
+    })
+
+    if(teams){
+      throw new TRPCError ({code : "CONFLICT"})
+    }
+    const newTeam = await db.team.create({
+      data  : {
+        name : teamName,
+        size : selectedUsers.length,
+        users : {
+          connect : selectedUsers.map((user)=>({id : user.id}))
+        }
+      }
+    })
+    return newTeam
   })
 
 })

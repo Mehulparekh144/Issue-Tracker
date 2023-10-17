@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import {
   Select,
@@ -21,22 +21,32 @@ import {
   newTeamValidationSchema,
 } from "@/lib/addTeamValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-interface UserProp {
-  id: string;
-  name: string;
-  email: string;
-  image: string;
-}
+import z from "zod";
+import { UserObjectSchema } from "@/lib/userSchema";
 
 function AddTeamPage() {
   const { data: users, isLoading, error } = trpc.getUsersWithNoTeam.useQuery();
-  const [selectedUsers, setSelectedUsers] = useState<Array<UserProp>>([]);
+  const [selectedUsers, setSelectedUsers] = useState<Array<UserObjectSchema>>(
+    []
+  );
   const [indUser, setIndUser] = useState<string | null>(null);
 
   if (error) {
     toast.error("Error loading the users. Try again later");
   }
+
+  const { mutate: createNewTeamMutate } = trpc.createNewTeam.useMutation({
+    onSuccess(data) {
+      toast.success("Team created");
+    },
+    onError(error) {
+      if (error.data?.code === "CONFLICT") {
+        toast.error("Team name already exists !");
+      } else {
+        toast.error(error.message);
+      }
+    },
+  });
 
   const addUserHandler = (item: string) => {
     const JSONItem = JSON.parse(item);
@@ -44,7 +54,7 @@ function AddTeamPage() {
     setIndUser(null);
   };
 
-  const removeUserHandler = (item: UserProp) => {
+  const removeUserHandler = (item: UserObjectSchema) => {
     setSelectedUsers(selectedUsers.filter((user) => user.id != item.id));
     setIndUser(JSON.stringify(item));
   };
@@ -60,7 +70,11 @@ function AddTeamPage() {
   const createNewTeamHandler: SubmitHandler<NewTeamValidationSchema> = (
     data
   ) => {
-    console.log(data);
+    const { teamName } = data;
+    createNewTeamMutate({
+      teamName: teamName,
+      selectedUsers: selectedUsers,
+    });
   };
 
   return (
@@ -100,7 +114,7 @@ function AddTeamPage() {
               </SelectTrigger>
               <SelectContent>
                 {users &&
-                  users?.map((item) => {
+                  users.map((item) => {
                     if (!selectedUsers.some((user) => user.id === item.id)) {
                       return (
                         <>
@@ -131,6 +145,11 @@ function AddTeamPage() {
             </Button>
           )}
         </div>
+        {selectedUsers.length === 0 && (
+          <p className="text-destructive font-semibold mt-1 text-xs">
+            Select atleast 1 user
+          </p>
+        )}
 
         {selectedUsers && (
           <div className="flex flex-col gap-4 w-full">
@@ -153,7 +172,11 @@ function AddTeamPage() {
             ))}
           </div>
         )}
-        <Button type="submit" className="w-max mt-2 font-semibold">
+        <Button
+          type="submit"
+          disabled={selectedUsers.length === 0}
+          className="w-max mt-2 font-semibold"
+        >
           Create
         </Button>
       </form>
