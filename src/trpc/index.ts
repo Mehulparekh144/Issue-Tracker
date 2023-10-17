@@ -27,9 +27,10 @@ export const appRouter = router({
     return { success: true }
   })
   ,
-  getUsersWithNoTeam: privateProcedure.query(async () => {
+  getUsersWithNoTeam: privateProcedure.query(async ({ctx}) => {
+    const {user} = ctx
     const dbUsers = await db.user.findMany();
-    return dbUsers.filter((item) => item.teamId === null)
+    return dbUsers.filter((item) => item.teamId === null && item.email != user.email )
   })
   ,
   registerUser: publicProcedure.input(z.object({
