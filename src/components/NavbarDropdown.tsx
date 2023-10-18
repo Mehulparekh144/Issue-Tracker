@@ -13,17 +13,19 @@ import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import SignupButton from "./SignupButton";
 import Link from "next/link";
+import type { Session } from "next-auth";
 
-function NavbarDropdown() {
+function NavbarDropdown({ session }: { session: Session | null }) {
   const { theme, setTheme } = useTheme();
-  const { data: session } = useSession();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         {session?.user ? (
           <Avatar className="cursor-pointer h-8 w-8 ring-2 ring-primary">
             <AvatarImage src={session.user.image ?? ""} />
-            <AvatarFallback>{session.user.name?.charAt(0).toUpperCase()}</AvatarFallback>
+            <AvatarFallback>
+              {session.user.name?.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         ) : (
           <Button variant="ghost">
@@ -54,7 +56,10 @@ function NavbarDropdown() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuLabel asChild>
-              <Button variant={"ghost"} onClick={() => signOut({callbackUrl : "/"})}>
+              <Button
+                variant={"ghost"}
+                onClick={() => signOut({ callbackUrl: "/" })}
+              >
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </Button>

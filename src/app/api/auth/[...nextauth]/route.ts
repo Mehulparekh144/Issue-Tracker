@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt'
 import { NextAuthOptions } from 'next-auth'
 
 const prisma = new PrismaClient()
-export const authOptions : NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
@@ -45,6 +45,40 @@ export const authOptions : NextAuthOptions = {
   ],
   session: {
     strategy: 'jwt',
+  },
+  callbacks: {
+    async session({ token, session }) {
+      if (token) {
+        if(session.user){
+          session.user.id = token.id
+          session.user.role = token.role
+          session.user.name = token.name
+          session.user.email = token.email
+          session.user.image = token.image
+        }
+      }
+      return session
+    },
+    async jwt({ token, user }) {
+      const dbUser = await db.user.findFirst({
+        where: {
+          email: token.email
+        }
+      })
+
+      if (!dbUser) {
+        token.id = user!.id
+        return token
+      }
+
+      return {
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        image: dbUser.image,
+        role: dbUser.role
+      }
+    }
   },
   secret: process.env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(prisma)

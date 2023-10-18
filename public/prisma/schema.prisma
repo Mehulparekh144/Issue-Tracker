@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 model User {
   id            String    @id @default(cuid()) @map("_id")
   name          String?
@@ -16,6 +21,7 @@ model User {
   password      String?
   accounts      Account[]
   sessions      Session[]
+  role          UserRole  @default(USER)
   team          Team?     @relation(fields: [teamId], references: [id])
   teamId        String?
   issues        Issue[] // Renamed "Issue" to "issues" to match Prisma conventions

@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { privateProcedure, publicProcedure, router } from "./trpc";
+import { adminProcedure, privateProcedure, publicProcedure, router } from "./trpc";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { z } from 'zod';
@@ -65,7 +65,7 @@ export const appRouter = router({
   })
   ,
 
-  createNewTeam: privateProcedure.input(z.object({
+  createNewTeam: adminProcedure.input(z.object({
     teamName: z.string(),
     selectedUsers: z.array(userObjectSchema)
   })).mutation(async ({ input, ctx }) => {

@@ -62,6 +62,7 @@ function AddTeamPage() {
   const {
     register,
     handleSubmit,
+    reset ,
     formState: { errors },
   } = useForm<NewTeamValidationSchema>({
     resolver: zodResolver(newTeamValidationSchema),
@@ -75,6 +76,9 @@ function AddTeamPage() {
       teamName: teamName,
       selectedUsers: selectedUsers,
     });
+    reset();
+    setIndUser(JSON.stringify(selectedUsers[0]));
+    setSelectedUsers([]);
   };
 
   return (

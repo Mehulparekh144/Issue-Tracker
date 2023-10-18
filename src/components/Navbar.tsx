@@ -5,13 +5,12 @@ import MaxWidthWrapper from "./MaxWidthWrapper";
 import { useTheme } from "next-themes";
 import NavbarDropdown from "./NavbarDropdown";
 import SignupButton from "./SignupButton";
-import { useSession } from "next-auth/react";
 import UserDropDown from "./UserDropDown";
 import { Switch } from "./ui/switch";
-
-function Navbar() {
+import type { Session } from "next-auth";
+function Navbar({session} : {session:Session | null}) {
   const { theme, setTheme } = useTheme();
-  const { data: session } = useSession();
+
   return (
     <nav className="sticky inset-0  z-30 backdrop-blur-md shadow-sm dark:shadow-xl transition-all ">
       <MaxWidthWrapper className="flex flex-row items-center justify-between gap-4 py-2 px-6 ">
@@ -46,7 +45,7 @@ function Navbar() {
         </div>
 
         <div className="lg:hidden">
-          <NavbarDropdown />
+          <NavbarDropdown session={session} />
         </div>
       </MaxWidthWrapper>
     </nav>

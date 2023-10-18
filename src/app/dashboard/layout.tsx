@@ -17,14 +17,16 @@ export default async function layout({
     redirect("/auth-callback?origin=dashboard");
   } else if (session.user) {
     return (
-      <div className="flex relative max-w-screen" >
+      <div className="flex relative max-w-screen">
         <DashboardNav
+          role={session.user.role}
           image={session.user.image ?? ""}
           name={session.user.name ?? ""}
           email={session.user.email ?? ""}
         />
         {/* Sheet */}
         <DashboardSheet
+          role={session.user.role}
           image={session.user.image ?? ""}
           name={session.user.name ?? ""}
           email={session.user.email ?? ""}

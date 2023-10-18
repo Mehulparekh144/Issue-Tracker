@@ -21,6 +21,27 @@ const isAuth = middleWare(async (opts) => {
   })
 })
 
+const isAdmin = middleWare(async (opts)=>{
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    throw new TRPCError({ code: "UNAUTHORIZED" })
+  }
+  if (!session.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" })
+  }
+  if(session.user.role === 'USER'){
+    throw new TRPCError({ code: "UNAUTHORIZED" })
+  }
+
+  return opts.next({
+    ctx: {
+      user: session.user,
+    }
+  })
+
+})
+
 export const router = t.router
 export const publicProcedure = t.procedure;
 export const privateProcedure = t.procedure.use(isAuth)
+export const adminProcedure = t.procedure.use(isAdmin)

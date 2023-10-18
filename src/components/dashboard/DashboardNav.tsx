@@ -2,33 +2,36 @@
 import Link from "next/link";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { LayoutDashboard , Users, Plus } from "lucide-react";
+import { LayoutDashboard, Users, Plus } from "lucide-react";
 import { usePathname } from "next/navigation";
-
 
 interface UserProps {
   image: string;
   name: string;
   email: string;
+  role: string;
 }
 
-function DashboardNav({ image, name, email }: UserProps) {
+function DashboardNav({ image, name, email, role }: UserProps) {
   const pathName = usePathname();
   const navItems = [
     {
       name: "Dashboard",
       link: "/dashboard",
       icon: <LayoutDashboard className="h-6 w-6" />,
+      isAdmin: false,
     },
     {
       name: "Teams",
       link: "/dashboard/teams",
       icon: <Users className="h-6 w-6" />,
+      isAdmin: false,
     },
     {
       name: "Add",
       link: "/dashboard/add",
       icon: <Plus className="h-6 w-6" />,
+      isAdmin: true,
     },
   ];
 
@@ -37,21 +40,41 @@ function DashboardNav({ image, name, email }: UserProps) {
       <div className="h-full flex flex-col w-max items-center justify-between">
         <div className="flex-0 w-full flex flex-col items-center ">
           {navItems.map((item) => {
-            const isActive = pathName === item.link || item.link === "/dashboard/add" && pathName.includes(item.link)          
-            
+            const isActive =
+              pathName === item.link ||
+              (item.link === "/dashboard/add" && pathName.includes(item.link));
 
-            return (
-              <Link
-                href={item.link}
-                key={item.name}
-                className={`px-2 py-4 w-full text-sm flex items-center gap-3  ${
-                  isActive ? "bg-white text-primary font-semibold dark:bg-[#121212]" : " dark:hover:bg-white/10 hover:bg-black/10"
-                }`}
-              >
-                {item.icon}
-                {item.name}
-              </Link>
-            );
+            if (item.isAdmin && role === "ADMIN") {
+              return (
+                <Link
+                  href={item.link}
+                  key={item.name}
+                  className={`px-2 py-4 w-full text-sm flex items-center gap-3  ${
+                    isActive
+                      ? "bg-white text-primary font-semibold dark:bg-[#121212]"
+                      : " dark:hover:bg-white/10 hover:bg-black/10"
+                  } `}
+                >
+                  {item.icon}
+                  {item.name}
+                </Link>
+              );
+            } else if (!item.isAdmin) {
+              return (
+                <Link
+                  href={item.link}
+                  key={item.name}
+                  className={`px-2 py-4 w-full text-sm flex items-center gap-3  ${
+                    isActive
+                      ? "bg-white text-primary font-semibold dark:bg-[#121212]"
+                      : " dark:hover:bg-white/10 hover:bg-black/10"
+                  } `}
+                >
+                  {item.icon}
+                  {item.name}
+                </Link>
+              );
+            }
           })}
         </div>
         <div className="mb-4 flex w-full items-center gap-4 px-4">

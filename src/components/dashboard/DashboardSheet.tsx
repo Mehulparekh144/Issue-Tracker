@@ -12,9 +12,10 @@ interface UserProps {
   image: string;
   name: string;
   email: string;
+  role: string;
 }
 
-function DashboardSheet({ image, email, name }: UserProps) {
+function DashboardSheet({ image, email, name, role }: UserProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const pathName = usePathname();
   const navItems = [
@@ -22,16 +23,19 @@ function DashboardSheet({ image, email, name }: UserProps) {
       name: "Dashboard",
       link: "/dashboard",
       icon: <LayoutDashboard className="h-6 w-6" />,
+      isAdmin: false,
     },
     {
       name: "Teams",
       link: "/dashboard/teams",
       icon: <Users className="h-6 w-6" />,
+      isAdmin: false,
     },
     {
       name: "Add",
       link: "/dashboard/add",
       icon: <Plus className="h-6 w-6" />,
+      isAdmin: true,
     },
   ];
   return (
@@ -62,7 +66,7 @@ function DashboardSheet({ image, email, name }: UserProps) {
                 <Link
                   href={item.link}
                   key={item.name}
-                  onClick={()=>setIsOpen(false)}
+                  onClick={() => setIsOpen(false)}
                   className={`px-2 py-4 w-full text-sm flex items-center gap-3  ${
                     isActive
                       ? "bg-white text-primary font-semibold dark:bg-[#121212]"
