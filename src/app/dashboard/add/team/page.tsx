@@ -23,9 +23,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { UserObjectSchema } from "@/lib/userSchema";
+import { useRouter } from "next/navigation";
 
 function AddTeamPage() {
   const { data: users, isLoading, error } = trpc.getUsersWithNoTeam.useQuery();
+  const router = useRouter();
   const [selectedUsers, setSelectedUsers] = useState<Array<UserObjectSchema>>(
     []
   );
@@ -37,6 +39,7 @@ function AddTeamPage() {
 
   const { mutate: createNewTeamMutate } = trpc.createNewTeam.useMutation({
     onSuccess(data) {
+      router.push("/dashboard/teams")
       toast.success("Team created");
     },
     onError(error) {
@@ -76,9 +79,6 @@ function AddTeamPage() {
       teamName: teamName,
       selectedUsers: selectedUsers,
     });
-    reset();
-    setIndUser(JSON.stringify(selectedUsers[0]));
-    setSelectedUsers([]);
   };
 
   return (

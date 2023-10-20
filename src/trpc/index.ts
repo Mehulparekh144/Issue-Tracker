@@ -71,24 +71,112 @@ export const appRouter = router({
   })).mutation(async ({ input, ctx }) => {
     const { teamName, selectedUsers } = input
     const teams = await db.team.findFirst({
-      where : {
-        name : teamName
+      where: {
+        name: teamName
       }
     })
 
-    if(teams){
-      throw new TRPCError ({code : "CONFLICT"})
+    if (teams) {
+      throw new TRPCError({ code: "CONFLICT" })
     }
     const newTeam = await db.team.create({
-      data  : {
-        name : teamName,
-        size : selectedUsers.length,
-        users : {
-          connect : selectedUsers.map((user)=>({id : user.id}))
+      data: {
+        name: teamName,
+        size: selectedUsers.length,
+        users: {
+          connect: selectedUsers.map((user) => ({ id: user.id }))
         }
       }
     })
     return newTeam
+  })
+  ,
+
+  getTeams: privateProcedure.query(async () => {
+    const dbTeams = await db.team.findMany(
+      {
+        include: {
+          users: true,
+          issues: true
+        }
+      }
+    );
+    return dbTeams
+  })
+  ,
+
+  deleteTeam: adminProcedure.input(z.object({
+    teamId: z.string()
+  })).mutation(async ({ input }) => {
+    const { teamId } = input
+    try {
+      const dbTeam = await db.team.findFirst({
+        where: {
+          id: teamId
+        }
+      })
+      if (!dbTeam) {
+        throw new TRPCError({ code: "NOT_FOUND" })
+      }
+      else {
+        await db.team.delete({
+          where: {
+            id: teamId
+          }
+        })
+        return { success: true }
+      }
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+    }
+  })
+  ,
+  deleteTeamMember: adminProcedure.input(z.object({
+    userId: z.string(),
+    teamId: z.string()
+  })).mutation(async ({ input }) => {
+    const { userId, teamId } = input
+    try {
+      const dbTeam = await db.team.findUnique({
+        where: {
+          id: teamId
+        },
+        include: {
+          users: true
+        }
+      })
+      if (!dbTeam) {
+        throw new TRPCError({ code: "NOT_FOUND" })
+      }
+
+      if (dbTeam.size <= 1) {
+        throw new TRPCError({ code: "METHOD_NOT_SUPPORTED" })
+      }
+
+      const userExists = dbTeam.users.some((user) => user.id === userId)
+      if (!userExists) {
+        throw new TRPCError({ code: "NOT_FOUND" })
+      }
+
+      const updatedUsers = dbTeam.users.filter((user) => user.id != userId)
+
+      await db.team.update({
+        where: {
+          id: teamId
+        },
+        data: {
+          size: dbTeam.size - 1,
+          users: {
+            set: updatedUsers.map((user) => ({ id: user.id })),
+          }
+        }
+      })
+
+      return { success: true }
+
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+    }
   })
 
 })

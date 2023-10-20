@@ -38,7 +38,7 @@ function UserDropDown({ image, name }: UserProps) {
         <DropdownMenuLabel asChild>
           <Button
             variant={"ghost"}
-            onClick={() => signOut({ callbackUrl: "/dashboard" })}
+            onClick={() => signOut({ callbackUrl: "/" })}
           >
             <LogOut className="h-4 w-4 mr-2" />
             Logout
