@@ -12,11 +12,21 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { UserRole } from "@prisma/client";
-import { Loader2, Mail, Minus } from "lucide-react";
+import { Loader2, Mail, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { trpc } from "@/app/_trpc/client";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import UserSelectItem from "./UserSelectItem";
 
 interface UserProps {
   image: string | null;
@@ -45,29 +55,55 @@ interface TeamProps {
 function TeamDetails({ team }: { team: TeamProps }) {
   const { data } = useSession();
   const utils = trpc.useContext();
+  const [indUser, setIndUser] = useState<string | null>("");
+  const { data: users, isLoading } = trpc.getUsersWithNoTeam.useQuery();
   const [deleting, setDeleting] = useState<string | null>("");
+  const [adding, setAdding] = useState<string | null>("");
   const { mutate: removeTeamMemberMutate } = trpc.deleteTeamMember.useMutation({
     onSuccess(data) {
       utils.getTeams.invalidate();
     },
-    onMutate({ teamId }) {
-      setDeleting(teamId);
+    onMutate({ userId }) {
+      setDeleting(userId);
     },
     onSettled() {
       setDeleting(null);
     },
     onError(error) {
-      if(error.data?.code === 'METHOD_NOT_SUPPORTED'){
+      if (error.data?.code === "METHOD_NOT_SUPPORTED") {
         toast.error("Team must have one member");
-      }
-      else{
+      } else {
         toast.error(error.message);
       }
     },
   });
 
+  const { mutate: addTeamMemberMutate } = trpc.addTeamMember.useMutation({
+    onSuccess(data) {
+      utils.getTeams.invalidate();
+      utils.getUsersWithNoTeam.invalidate();
+    },
+    onMutate({ userId }) {
+      setAdding(userId);
+    },
+    onSettled() {
+      setAdding(null);
+      setIndUser(null);
+    },
+    onError(error) {
+      toast.error(error.message);
+    },
+  });
+
   const removeTeamMemberHandler = (teamId: string, userId: string) => {
     removeTeamMemberMutate({
+      teamId: teamId,
+      userId: userId,
+    });
+  };
+
+  const addTeamMemberHandler = (teamId: string, userId: string) => {
+    addTeamMemberMutate({
       teamId: teamId,
       userId: userId,
     });
@@ -116,7 +152,7 @@ function TeamDetails({ team }: { team: TeamProps }) {
                     disabled={deleting === user.id}
                   >
                     {deleting === user.id ? (
-                      <Loader2 className="h-4 w-4 animate spin" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       <Minus />
                     )}
@@ -126,7 +162,51 @@ function TeamDetails({ team }: { team: TeamProps }) {
             </div>
           ))}
         </div>
-        {data?.user.role === "ADMIN" && <Button>Add Members</Button>}
+        {data?.user.role === "ADMIN" && (
+          <div className="flex items-end gap-3">
+            <Select onValueChange={(value) => setIndUser(value)}>
+              <SelectTrigger
+                className="mt-2 flex gap-2"
+                disabled={isLoading || users?.length === 0}
+              >
+                {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+                <SelectValue
+                  placeholder={
+                    users?.length === 0 ? "No members to add" : "Add members"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {users?.map((user) => (
+                    <>
+                      <SelectItem key={user.id} value={user.id}>
+                        <UserSelectItem
+                          email={user.email ?? ""}
+                          name={user.name ?? ""}
+                          image={user.image ?? ""}
+                        />
+                      </SelectItem>
+                    </>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            {indUser && (
+              <Button
+                size={"icon"}
+                onClick={() => addTeamMemberHandler(team.id, indUser)}
+                disabled={adding === indUser}
+              >
+                {adding === indUser ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Plus className="h-5 w-5" />
+                )}
+              </Button>
+            )}
+          </div>
+        )}
 
         <Separator />
         <div className="flex flex-col w-full gap-2">

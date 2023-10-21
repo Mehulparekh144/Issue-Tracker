@@ -177,6 +177,61 @@ export const appRouter = router({
     } catch (error) {
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
     }
+  }),
+  addTeamMember: adminProcedure.input(z.object({
+    userId: z.string(),
+    teamId: z.string()
+  })).mutation(async ({ input }) => {
+    const { userId, teamId } = input
+    try {
+      const dbTeam = await db.team.findUnique({
+        where: {
+          id: teamId
+        },
+        include: {
+          users: true
+        }
+      })
+      if (!dbTeam) {
+        throw new TRPCError({ code: "NOT_FOUND" })
+      }
+
+      const userExists = dbTeam.users.some((user) => user.id === userId)
+      if (userExists) {
+        throw new TRPCError({ code: "CONFLICT" })
+      }
+
+      const dbUser = await db.user.findUnique({
+        where: {
+          id: userId
+        }
+      })
+
+      if (!dbUser) {
+        throw new TRPCError({ code: "NOT_FOUND" })
+      }
+
+      dbTeam.users.push(dbUser)
+      const updatedUsers = dbTeam.users
+
+
+      await db.team.update({
+        where: {
+          id: teamId
+        },
+        data: {
+          size: dbTeam.size + 1,
+          users: {
+            set: updatedUsers.map((user) => ({ id: user.id })),
+          }
+        }
+      })
+
+      return { success: true }
+
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+    }
   })
 
 })

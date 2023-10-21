@@ -109,12 +109,16 @@ function AddTeamPage() {
 
             <Select onValueChange={(value) => setIndUser(value)}>
               <SelectTrigger
-                disabled={isLoading}
+                disabled={isLoading || users?.length === 0}
                 className="mt-2 flex gap-2"
                 id="teamUsers"
               >
                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                <SelectValue placeholder="Users" />
+                <SelectValue
+                  placeholder={
+                    users?.length === 0 ? "No members to add" : "Add members"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
                 {users &&
