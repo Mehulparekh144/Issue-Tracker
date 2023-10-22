@@ -66,15 +66,15 @@ enum Status {
 }
 
 model Issue {
-  id           String   @id @default(cuid()) @map("_id")
-  issueNo      Int
-  issueTitle   String
-  teamAssigned Team     @relation(fields: [teamAssignedId], references: [id])
-  assigner     User     @relation(fields: [assignerId], references: [id])
-  assignedDate DateTime
-  deadlineDate DateTime
-  status       Status
-  priority     Priority // Using the enum for priority
+  id               String   @id @default(cuid()) @map("_id")
+  issueTitle       String
+  issueDescription String
+  teamAssigned     Team     @relation(fields: [teamAssignedId], references: [id])
+  assigner         User     @relation(fields: [assignerId], references: [id])
+  assignedDate     DateTime
+  deadlineDate     DateTime
+  status           Status
+  priority         Priority // Using the enum for priority
 
   teamAssignedId String
   assignerId     String

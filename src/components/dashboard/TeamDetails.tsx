@@ -62,6 +62,7 @@ function TeamDetails({ team }: { team: TeamProps }) {
   const { mutate: removeTeamMemberMutate } = trpc.deleteTeamMember.useMutation({
     onSuccess(data) {
       utils.getTeams.invalidate();
+      utils.getUsersWithNoTeam.invalidate();
     },
     onMutate({ userId }) {
       setDeleting(userId);

@@ -36,7 +36,7 @@ function DashboardNav({ image, name, email, role }: UserProps) {
   ];
 
   return (
-    <div className="hidden lg:block h-[93vh] bg-zinc-100 dark:bg-zinc-900">
+    <div className="hidden fixed z-10 lg:block h-[93vh] bg-zinc-100 dark:bg-zinc-900">
       <div className="h-full flex flex-col w-max items-center justify-between">
         <div className="flex-0 w-full flex flex-col items-center ">
           {navItems.map((item) => {

@@ -31,7 +31,7 @@ export default async function layout({
           name={session.user.name ?? ""}
           email={session.user.email ?? ""}
         />
-        <div className="flex-1 w-full">{children}</div>
+        <div className="flex-1 w-full lg:pl-[calc(18%-12px)]">{children}</div>
       </div>
     );
   }
