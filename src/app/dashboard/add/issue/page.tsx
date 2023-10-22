@@ -1,6 +1,7 @@
 "use client"
 import { trpc } from "@/app/_trpc/client";
 import Datepicker from "@/components/dashboard/Datepicker";
+import ScreenshotUpload from "@/components/dashboard/ScreenshotUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,7 +39,7 @@ function AddIssue() {
         </div>
         <div>
           <Label htmlFor="screenshots">Screenshots</Label>
-          <Input className="mt-2" id="screenshots" placeholder="Enter image url" />
+          <ScreenshotUpload/>
         </div>
         <div className="flex flex-col md:flex-row justify-between gap-2 w-full">
           {/* Deadline Date */}
