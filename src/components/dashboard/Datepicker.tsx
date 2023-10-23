@@ -16,7 +16,7 @@ interface DateProps {
 function Datepicker({ date, setDate, id }: DateProps) {
   return (
     <Popover>
-      <PopoverTrigger asChild>
+      <PopoverTrigger className="flex justify-start" asChild>
         <Button id={id} variant={"outline"} className="mt-2">
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? format(date, "PPP") : <span>Pick a date</span>}

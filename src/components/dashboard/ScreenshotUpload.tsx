@@ -2,14 +2,17 @@ import { Cloud, Minus } from "lucide-react";
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
+import { useUploadThing } from "@/lib/uploadThing";
 
-interface FileProps{
-  name : string,
-  type : string
+interface FileProps {
+  name: string;
+  type: string;
 }
 
 function ScreenshotUpload() {
-  const [selectedFiles , setSelectedFiles] = useState<Array<FileProps>>([])
+  const [selectedFiles, setSelectedFiles] = useState<Array<FileProps>>([]);
+  const { startUpload } = useUploadThing("imageUploader");
   const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
     useDropzone({
       accept: {
@@ -17,14 +20,24 @@ function ScreenshotUpload() {
         "image/png": [],
         "image/jpg": [],
       },
-      onDrop : (accepted) =>{
-        setSelectedFiles([...selectedFiles , ...accepted])
-      }
+      onDrop: async (accepted) => {
+        setSelectedFiles([...selectedFiles, ...accepted]);
+
+        const res = await startUpload(acceptedFiles);
+        if (!res) {
+          return toast.error("Upload failed");
+        }
+        const [fileResponse] = res;
+        const key = fileResponse?.key;
+        if (!key) {
+          return toast.error("Upload failed key");
+        }
+      },
     });
-    
-  const handleDeleteFile = (file:FileProps) =>{
-    setSelectedFiles(selectedFiles.filter((f) => f != file))
-  }
+
+  const handleDeleteFile = (file: FileProps) => {
+    setSelectedFiles(selectedFiles.filter((f) => f != file));
+  };
 
   return (
     <div>
@@ -32,6 +45,12 @@ function ScreenshotUpload() {
         {...getRootProps()}
         className=" cursor-pointer border-2 border-dashed  py-4 mt-2 border-zinc-200 rounded-md dark:border-zinc-800 "
       >
+        <input
+          {...getInputProps}
+          id="dropzone-file"
+          type="file"
+          className="hidden"
+        />
         <div
           {...getInputProps}
           className="flex flex-col items-center justify-center"
@@ -58,12 +77,10 @@ function ScreenshotUpload() {
             >
               <h1>{item.name}</h1>
               <Button
-              type="button"
+                type="button"
                 variant={"destructive"}
                 size={"icon"}
-                onClick={() =>
-                  handleDeleteFile(item)
-                }
+                onClick={() => handleDeleteFile(item)}
               >
                 <Minus className="h-4 w-4" />
               </Button>

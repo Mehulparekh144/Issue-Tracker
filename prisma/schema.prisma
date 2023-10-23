@@ -66,10 +66,12 @@ enum Status {
 }
 
 model Image {
-  id      String @id @default(cuid()) @map("_id")
+  id      String  @id @default(cuid()) @map("_id")
   url     String
-  issue   Issue  @relation(fields: [issueId], references: [id])
-  issueId String
+  key     String
+  name    String
+  issueId String?
+  issue   Issue?  @relation(fields: [issueId], references: [id])
 }
 
 model Issue {

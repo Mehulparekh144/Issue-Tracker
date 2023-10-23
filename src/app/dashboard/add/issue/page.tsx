@@ -16,7 +16,6 @@ import { toast } from "sonner";
 function AddIssue() {
   const [deadlineDate, setDeadlineDate] = useState<Date>(new Date())
   const {data: teams , error , isLoading} = trpc.getTeams.useQuery();
-  console.log(teams);
   if(error){
     toast.error("Error loading teams");
   }
