@@ -5,8 +5,13 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { z } from 'zod';
 import { db } from "@/db";
 import bcrypt from 'bcrypt';
-import { userObjectSchema } from "@/lib/userSchema";
+import { userObjectSchema } from "@/lib/schemas/userSchema";
+import { UTApi } from "uploadthing/server";
+import { imageObjectSchema } from "@/lib/schemas/imagesSchema";
 
+
+
+const utapi = new UTApi()
 
 
 export const appRouter = router({
@@ -178,6 +183,7 @@ export const appRouter = router({
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
     }
   }),
+
   addTeamMember: adminProcedure.input(z.object({
     userId: z.string(),
     teamId: z.string()
@@ -232,7 +238,94 @@ export const appRouter = router({
     } catch (error) {
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
     }
+  }),
+
+  getTempFile: adminProcedure.input(z.object({
+    key: z.string(),
+  })).mutation(async ({ input }) => {
+    const { key } = input
+
+    const file = await db.tempImage.findFirst({
+      where: {
+        key: key
+      }
+    })
+
+    if (!file) {
+      throw new TRPCError({ code: "NOT_FOUND" })
+    }
+    return file
+  }),
+
+  removeTempFile: adminProcedure.input(z.object({
+    id: z.string(),
+    key: z.string()
+  })).mutation(async ({ input }) => {
+    const { id, key } = input
+    try {
+      await utapi.deleteFiles(key)
+      const dbFile = await db.tempImage.findUnique({
+        where: {
+          id: id
+        }
+      })
+      if (!dbFile) {
+        throw new TRPCError({ code: "NOT_FOUND" })
+      }
+
+      await db.tempImage.delete({
+        where: {
+          id: id
+        }
+      })
+
+      return id
+
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+
+    }
   })
+  ,
+
+  createNewIssue: adminProcedure.input(z.object({
+    issueName: z.string(),
+    issueDescription: z.string(),
+    deadlineDate: z.string(),
+    priority: z.enum(["URGENT", "HIGH", "MEDIUM", "LOW"]),
+    team: z.string(),
+    selectedFiles: z.array(imageObjectSchema)
+  })).mutation(async ({ ctx, input }) => {
+    const { issueName, issueDescription, deadlineDate, priority, team, selectedFiles } = input;
+    const { user } = ctx;
+
+    try {
+      const createdIssue = await db.issue.create({
+        data: {
+          issueTitle: issueName,
+          issueDescription: issueDescription,
+          teamAssignedId: team,
+          assignerId: user.id,
+          assignedDate: new Date(),
+          deadlineDate: new Date(deadlineDate),
+          priority: priority,
+          status: "OPEN",
+          Image: {
+            create: selectedFiles.map(image => ({
+              url: image.url,
+              key: image.key,
+              name: image.name,
+            })),
+          },
+        },
+      });
+
+      return { status: true };
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    }
+  })
+
 
 })
 

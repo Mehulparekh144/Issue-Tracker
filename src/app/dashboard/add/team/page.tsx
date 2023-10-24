@@ -19,10 +19,10 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import {
   NewTeamValidationSchema,
   newTeamValidationSchema,
-} from "@/lib/addTeamValidation";
+} from "@/lib/schemas/addTeamValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { UserObjectSchema } from "@/lib/userSchema";
+import { UserObjectSchema } from "@/lib/schemas/userSchema";
 import { useRouter } from "next/navigation";
 
 function AddTeamPage() {
@@ -39,7 +39,7 @@ function AddTeamPage() {
 
   const { mutate: createNewTeamMutate } = trpc.createNewTeam.useMutation({
     onSuccess(data) {
-      router.push("/dashboard/teams")
+      router.push("/dashboard/teams");
       toast.success("Team created");
     },
     onError(error) {
@@ -65,7 +65,7 @@ function AddTeamPage() {
   const {
     register,
     handleSubmit,
-    reset ,
+    reset,
     formState: { errors },
   } = useForm<NewTeamValidationSchema>({
     resolver: zodResolver(newTeamValidationSchema),

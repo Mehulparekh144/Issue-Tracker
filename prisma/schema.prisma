@@ -74,6 +74,13 @@ model Image {
   issue   Issue?  @relation(fields: [issueId], references: [id])
 }
 
+model TempImage {
+  id   String @id @default(cuid()) @map("_id")
+  url  String
+  key  String
+  name String
+}
+
 model Issue {
   id               String   @id @default(cuid()) @map("_id")
   issueTitle       String
