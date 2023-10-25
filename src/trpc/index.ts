@@ -110,6 +110,26 @@ export const appRouter = router({
   })
   ,
 
+  getTeamById : privateProcedure.input(z.object({ teamId : z.string() })).query(async ({input})=> {
+    try {
+      const dbTeam = await db.team.findUnique({
+        where : {
+          id : input.teamId
+        },
+        include : {
+          users : true
+        }
+      })
+      if(!dbTeam){
+        throw new TRPCError({code : "NOT_FOUND"})
+      }
+      return dbTeam
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+
+    }
+  }),
+
   deleteTeam: adminProcedure.input(z.object({
     teamId: z.string()
   })).mutation(async ({ input }) => {
@@ -323,6 +343,46 @@ export const appRouter = router({
       return { status: true };
     } catch (error) {
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+    }
+  })
+  ,
+
+  getAllIssues: privateProcedure.query(async () => {
+    try {
+      const dbIssues = await db.issue.findMany({
+        include : {
+          Image : true,
+          teamAssigned : true,
+          assigner : true
+        }
+      })
+      return dbIssues
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+    }
+  })
+  ,
+
+  getIssueById : privateProcedure.input(z.object({
+    issueId : z.string()
+  })).query(async ({input}) => {
+    try {
+      const dbIssue = await db.issue.findUnique({
+        where : {
+          id : input.issueId
+        },
+        include : {
+          assigner : true,
+          teamAssigned : true,
+          Image : true
+        }
+      })
+      if(!dbIssue){
+        throw new TRPCError({code : "NOT_FOUND"})
+      }
+      return dbIssue
+    } catch (error) {
+      throw new TRPCError({code : "INTERNAL_SERVER_ERROR"})
     }
   })
 

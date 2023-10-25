@@ -42,7 +42,7 @@ function DashboardNav({ image, name, email, role }: UserProps) {
           {navItems.map((item) => {
             const isActive =
               pathName === item.link ||
-              (item.link === "/dashboard/add" && pathName.includes(item.link));
+              (item.link === "/dashboard/add" && pathName.includes(item.link))
 
             if (item.isAdmin && role === "ADMIN") {
               return (

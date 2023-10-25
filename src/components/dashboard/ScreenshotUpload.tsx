@@ -124,6 +124,8 @@ function ScreenshotUpload({
                 alt={item.name}
                 width={280}
                 height={280}
+                placeholder="blur"
+                blurDataURL="iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                 className="aspect-auto rounded-md shadow-md transition-opacity opacity-0 duration-[2s]"
                 onLoadingComplete={(image) =>
                   image.classList.remove("opacity-0")

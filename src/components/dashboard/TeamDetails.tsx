@@ -214,9 +214,13 @@ function TeamDetails({ team }: { team: TeamProps }) {
           <h1 className="font-semibold">Issues Assigned</h1>
           {team.issues.length > 0 ? (
             team.issues.map((issue) => (
-              <div className="flex gap-4 items-start w-full" key={issue.id}>
-                <h1>{issue.issueTitle}</h1>
-              </div>
+              <Link
+                key={issue.id}
+                href={"/dashboard/issue/" + issue.id + "?teamId=" + team.id }
+                className="text-sm underline"
+              >
+                {issue.issueTitle}
+              </Link>
             ))
           ) : (
             <h1 className="text-muted-foreground text-xs">
