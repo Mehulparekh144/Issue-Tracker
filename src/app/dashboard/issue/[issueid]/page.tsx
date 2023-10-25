@@ -14,6 +14,8 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import ImagesModal from "@/components/dashboard/ImagesModal";
 
 function IssuePage({ params }: PageProps) {
   const searchParams = useSearchParams();
@@ -103,7 +105,7 @@ function IssuePage({ params }: PageProps) {
                 {data.issueDescription}
               </h2>
               {data.Image.length > 0 && (
-                <div className="grid grid-cols-3  mt-6 grid-rows-2 rounded-md shadow-lg">
+                <div className="grid relative grid-cols-3 h-max mt-6 grid-rows-2 rounded-md shadow-lg">
                   <div
                     className={
                       data.Image.length > 1
@@ -162,13 +164,14 @@ function IssuePage({ params }: PageProps) {
                       </div>
                     </>
                   )}
+                  <ImagesModal images={data.Image} />
                 </div>
               )}
             </div>
 
-            <div className="flex ml-0 md:ml-4 flex-row flex-wrap md:flex-col gap-4 md:gap-1  items-start justify-center md:items-start md:justify-between">
+            <div className="flex  md:mt-0 ml-0 md:ml-4 flex-row flex-wrap md:flex-col gap-4 md:gap-1  items-start justify-center md:items-start md:justify-between">
               <div>
-                <h1 className="text-sm md:text-base font-semibold">
+                <h1 className="text-sm md:text-base text-center font-semibold">
                   Deadline Date{" "}
                   <Badge
                     variant={
@@ -193,7 +196,7 @@ function IssuePage({ params }: PageProps) {
                 </div>
               </div>
               <div>
-                <h1 className="text-sm mb-2 md:text-base font-semibold">
+                <h1 className="text-sm mb-2 md:text-base text-center font-semibold">
                   {data.teamAssigned.name}
                 </h1>
                 <div className="flex flex-col gap-2 w-full items-start justify-center">
