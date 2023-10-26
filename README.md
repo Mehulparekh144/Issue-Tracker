@@ -2,6 +2,13 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Test Credentials - Don't Misuse it :)
+
+| Email              | Password      |
+| ------------------ | ------------- |
+| test@workmail.com  | Test@123      |
+| testadmin@mail.com | TestAdmin@123 |
+
 First, run the development server:
 
 ```bash
