@@ -9,6 +9,7 @@ import { Toaster } from "sonner";
 import CustomToaster from "@/components/CustomToaster";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
