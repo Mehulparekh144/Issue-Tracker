@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 
 function CustomToaster() {
   const { theme } = useTheme();
-  return <Toaster richColors theme={theme} />;
+  return <Toaster richColors />;
 }
 
 export default CustomToaster;
