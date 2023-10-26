@@ -26,8 +26,8 @@ export default function Home() {
             <Image
               src={`${
                 theme === "dark"
-                  ? "/static/img/dashboard_dark.png"
-                  : "/static/img/dashboard_light.png"
+                  ? "/dashboard_dark.png"
+                  : "/dashboard_light.png"
               } `}
               alt="dashboard.png"
               width={1920}
