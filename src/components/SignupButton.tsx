@@ -37,7 +37,9 @@ function SignupButton() {
       }}
     >
       <DialogTrigger onClick={() => setIsOpen(true)} asChild>
-        <Button variant={"ghost"}>Sign in</Button>
+        <Button className="-ml-2 font-semibold" variant={"ghost"}>
+          Sign in
+        </Button>
       </DialogTrigger>
 
       <DialogContent>

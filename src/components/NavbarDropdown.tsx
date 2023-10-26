@@ -63,12 +63,13 @@ function NavbarDropdown({ session }: { session: Session | null }) {
             </DropdownMenuLabel>
           </>
         ) : (
-          <DropdownMenuLabel>
+          <DropdownMenuLabel asChild>
             <SignupButton />
           </DropdownMenuLabel>
         )}
         <DropdownMenuLabel asChild>
-          <button
+          <Button
+          variant={"ghost"}
             className="flex items-center gap-2"
             aria-label={theme}
             onClick={() => {
@@ -84,7 +85,7 @@ function NavbarDropdown({ session }: { session: Session | null }) {
                 <SunIcon /> Enable Light Mode
               </>
             )}
-          </button>
+          </Button>
         </DropdownMenuLabel>
       </DropdownMenuContent>
     </DropdownMenu>
