@@ -2,6 +2,8 @@
 import Main from "@/components/home/Main";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import dashboard_dark from '../assets/images/dashboard_dark.png'
+import dashboard_light from '../assets/images/dashboard_light.png'
 
 export default function Home() {
   const { theme } = useTheme();
@@ -24,11 +26,11 @@ export default function Home() {
         <div className="mt-16 lg:mt-24 flow-root">
           <div className="-m-2 lg:-m-4 rounded-xl bg-gray-900/5 p-1 ring-1 ring-inset ring-gray-900/10 lg:rounded-2xl lg:p-4">
             <Image
-              src={`${
+              src={
                 theme === "dark"
-                  ? "/dashboard_dark.png"
-                  : "/dashboard_light.png"
-              } `}
+                  ? dashboard_dark
+                  : dashboard_light
+              }
               alt="dashboard.png"
               width={1920}
               height={897}
