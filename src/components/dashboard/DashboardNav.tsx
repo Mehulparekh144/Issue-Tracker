@@ -2,8 +2,9 @@
 import Link from "next/link";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { LayoutDashboard, Users, Plus } from "lucide-react";
+import { LayoutDashboard, Users, Plus, User, UserCog } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { PersonIcon } from "@radix-ui/react-icons";
 
 interface UserProps {
   image: string;
@@ -32,6 +33,18 @@ function DashboardNav({ image, name, email, role }: UserProps) {
       link: "/dashboard/add",
       icon: <Plus className="h-6 w-6" />,
       isAdmin: true,
+    },
+    {
+      name: "Users",
+      link: "/dashboard/users",
+      icon: <UserCog className="h-6 w-6" />,
+      isAdmin: true,
+    },
+    {
+      name: "Profile",
+      link: "/dashboard/profile",
+      icon: <User className="h-6 w-6" />,
+      isAdmin: false,
     },
   ];
 

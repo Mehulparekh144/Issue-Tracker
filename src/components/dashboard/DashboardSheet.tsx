@@ -2,7 +2,14 @@
 import React, { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
-import { Grip, LayoutDashboard, Plus, Users } from "lucide-react";
+import {
+  Grip,
+  LayoutDashboard,
+  Plus,
+  User,
+  UserCog,
+  Users,
+} from "lucide-react";
 import DashboardNav from "./DashboardNav";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
@@ -36,6 +43,18 @@ function DashboardSheet({ image, email, name, role }: UserProps) {
       link: "/dashboard/add",
       icon: <Plus className="h-6 w-6" />,
       isAdmin: true,
+    },
+    {
+      name: "Users",
+      link: "/dashboard/users",
+      icon: <UserCog className="h-6 w-6" />,
+      isAdmin: true,
+    },
+    {
+      name: "Profile",
+      link: "/dashboard/profile",
+      icon: <User className="h-6 w-6" />,
+      isAdmin: false,
     },
   ];
   return (

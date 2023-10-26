@@ -27,6 +27,10 @@ export const authOptions: NextAuthOptions = {
         const dbUser = await db.user.findUnique({
           where: {
             email: credentials.email
+          },
+          include: {
+            team: true,
+            issues: true
           }
         });
         if (!dbUser) {
@@ -49,7 +53,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ token, session }) {
       if (token) {
-        if(session.user){
+        if (session.user) {
           session.user.id = token.id
           session.user.role = token.role
           session.user.name = token.name

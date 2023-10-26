@@ -41,6 +41,16 @@ export const appRouter = router({
     return dbUsers.filter((item) => item.teamId === null && item.email != user.email)
   })
   ,
+
+  getAllUsers : adminProcedure.query(async ()=>{
+    try {
+      const dbUsers = await db.user.findMany()
+      return dbUsers
+    } catch (error) {
+      throw new TRPCError({code : "INTERNAL_SERVER_ERROR"})
+    }
+  }),
+
   registerUser: publicProcedure.input(z.object({
     name: z.string(),
     email: z.string(),
@@ -425,6 +435,30 @@ export const appRouter = router({
       })
 
       return { status: true }
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+    }
+  })
+  ,
+
+  getUserInfo : privateProcedure.input(z.object({
+    id : z.string()
+  })).query(async ({input})=>{
+    const {id} = input
+    try {
+      const dbUser = await db.user.findUnique({
+        where : {
+          id : id
+        },
+        include : {
+          team : true,
+          issues : true
+        }
+      })
+      if(!dbUser){
+        throw new TRPCError({code : "NOT_FOUND"})
+      }
+      return dbUser
     } catch (error) {
       throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
     }

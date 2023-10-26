@@ -49,9 +49,6 @@ function NavbarDropdown({ session }: { session: Session | null }) {
         {session?.user ? (
           <>
             <DropdownMenuLabel>
-              <Link href={"/profile"}>Profile</Link>
-            </DropdownMenuLabel>
-            <DropdownMenuLabel>
               <Link href={"/dashboard"}>Dashboard</Link>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />

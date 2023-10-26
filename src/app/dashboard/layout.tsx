@@ -4,7 +4,15 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import DashboardSheet from "@/components/dashboard/DashboardSheet";
+import { UserRole } from "@prisma/client";
 
+interface UserProps {
+  id: string;
+  email: string;
+  role: UserRole;
+  image: string | null;
+  name: string | null | undefined;
+}
 
 export default async function layout({
   children,
@@ -31,7 +39,9 @@ export default async function layout({
           name={session.user.name ?? ""}
           email={session.user.email ?? ""}
         />
-        <div className="flex-1 w-full lg:pl-[calc(18%-12px)]">{children}</div>
+        <div className="flex-1 w-full lg:pl-[calc(18%-12px)]">
+          {children}
+        </div>
       </div>
     );
   }
