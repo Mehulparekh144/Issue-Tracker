@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { ScrollArea } from "../ui/scroll-area";
+import { Expand } from "lucide-react";
 
 interface ImagesProps {
   name: string;
@@ -28,8 +29,8 @@ function ImagesModal({ images }: ImagesArrayProps) {
       }}
     >
       <DialogTrigger onClick={() => setIsOpen(true)} asChild>
-        <Button variant={"secondary"} className="absolute bottom-1 right-1">
-          See More
+        <Button size={"icon"} variant={"secondary"} className="absolute bottom-1 right-1">
+          <Expand className="text-zinc-800 dark:text-zinc-300"/>
         </Button>
       </DialogTrigger>
       <DialogContent className="w-screen h-screen">

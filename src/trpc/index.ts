@@ -110,18 +110,18 @@ export const appRouter = router({
   })
   ,
 
-  getTeamById : privateProcedure.input(z.object({ teamId : z.string() })).query(async ({input})=> {
+  getTeamById: privateProcedure.input(z.object({ teamId: z.string() })).query(async ({ input }) => {
     try {
       const dbTeam = await db.team.findUnique({
-        where : {
-          id : input.teamId
+        where: {
+          id: input.teamId
         },
-        include : {
-          users : true
+        include: {
+          users: true
         }
       })
-      if(!dbTeam){
-        throw new TRPCError({code : "NOT_FOUND"})
+      if (!dbTeam) {
+        throw new TRPCError({ code: "NOT_FOUND" })
       }
       return dbTeam
     } catch (error) {
@@ -350,10 +350,10 @@ export const appRouter = router({
   getAllIssues: privateProcedure.query(async () => {
     try {
       const dbIssues = await db.issue.findMany({
-        include : {
-          Image : true,
-          teamAssigned : true,
-          assigner : true
+        include: {
+          Image: true,
+          teamAssigned: true,
+          assigner: true
         }
       })
       return dbIssues
@@ -363,26 +363,70 @@ export const appRouter = router({
   })
   ,
 
-  getIssueById : privateProcedure.input(z.object({
-    issueId : z.string()
-  })).query(async ({input}) => {
+  getIssueById: privateProcedure.input(z.object({
+    issueId: z.string()
+  })).query(async ({ input }) => {
     try {
       const dbIssue = await db.issue.findUnique({
-        where : {
-          id : input.issueId
+        where: {
+          id: input.issueId
         },
-        include : {
-          assigner : true,
-          teamAssigned : true,
-          Image : true
+        include: {
+          assigner: true,
+          teamAssigned: true,
+          Image: true
         }
       })
-      if(!dbIssue){
-        throw new TRPCError({code : "NOT_FOUND"})
+      if (!dbIssue) {
+        throw new TRPCError({ code: "NOT_FOUND" })
       }
       return dbIssue
     } catch (error) {
-      throw new TRPCError({code : "INTERNAL_SERVER_ERROR"})
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+    }
+  })
+  ,
+
+  changeIssuePriority: adminProcedure.input(z.object({
+    issueId: z.string(),
+    priority: z.enum(["URGENT", "HIGH", "MEDIUM", "LOW"]),
+  })).mutation(async ({ input }) => {
+    const { issueId, priority } = input
+    try {
+      await db.issue.update({
+        where: {
+          id: issueId
+        },
+        data: {
+          priority: priority
+        }
+      })
+
+      return { status: true }
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+    }
+  })
+  ,
+
+  changeIssueStatus: adminProcedure.input(z.object({
+    issueId: z.string(),
+    status: z.enum(["OPEN", "CLOSED"]),
+  })).mutation(async ({ input }) => {
+    const { issueId, status } = input
+    try {
+      await db.issue.update({
+        where: {
+          id: issueId
+        },
+        data: {
+          status: status
+        }
+      })
+
+      return { status: true }
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
     }
   })
 

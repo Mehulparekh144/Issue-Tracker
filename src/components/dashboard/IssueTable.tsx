@@ -15,6 +15,7 @@ import { differenceInDays, format } from "date-fns";
 import { Separator } from "../ui/separator";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 interface IssueData {
   issueNo: number;
@@ -80,55 +81,77 @@ function IssueTable() {
   }
 
   return (
-    <>
-      <Table className="max-w-screen ">
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px] ">Issue No.</TableHead>
-            <TableHead className=" text-ellipsis overflow-hidden max-w-10">
-              Issue Title
-            </TableHead>
-            <TableHead>Team Assigned</TableHead>
-            <TableHead>Assigner</TableHead>
-            <TableHead>Assigned Date</TableHead>
-            <TableHead>Deadline Date</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Priority</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading
-            ? Array.from({ length: 5 }).map((_, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <Skeleton className="h-4 w-full" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-full" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4  w-full" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-full" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-full" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 mt-1 w-full" />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-4 w-full" />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Skeleton className="h-4 w-full" />
-                  </TableCell>
-                </TableRow>
-              ))
-            : data &&
-              data?.length > 0 &&
+    <Table className="w-full">
+      {isLoading ? (
+        <>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px] ">Issue No.</TableHead>
+              <TableHead className=" text-ellipsis overflow-hidden max-w-10">
+                Issue Title
+              </TableHead>
+              <TableHead>Team Assigned</TableHead>
+              <TableHead>Assigner</TableHead>
+              <TableHead>Assigned Date</TableHead>
+              <TableHead>Deadline Date</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Priority</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <TableRow key={index}>
+                {isLoading && (
+                  <>
+                    <TableCell>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4  w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 mt-1 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                  </>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </>
+      ) : (
+        <>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px] ">Issue No.</TableHead>
+              <TableHead className=" text-ellipsis overflow-hidden max-w-10">
+                Issue Title
+              </TableHead>
+              <TableHead>Team Assigned</TableHead>
+              <TableHead>Assigner</TableHead>
+              <TableHead>Assigned Date</TableHead>
+              <TableHead>Deadline Date</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Priority</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data && data?.length > 0 &&
               data.map((item, index) => (
                 <TableRow
                   onClick={() =>
@@ -183,9 +206,10 @@ function IssueTable() {
                   </TableCell>
                 </TableRow>
               ))}
-        </TableBody>
-      </Table>
-    </>
+          </TableBody>
+        </>
+      )}
+    </Table>
   );
 }
 

@@ -17,7 +17,7 @@ function UserToolTip({name , email , image} : UserProps ) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="underline cursor-pointer">{name}</span>
+          <div className="underline cursor-pointer">{name}</div>
         </TooltipTrigger>
         <TooltipContent asChild>
           <div className="dark:bg-zinc-800 bg-zinc-100   flex items-center justify-center gap-4 not-italic">

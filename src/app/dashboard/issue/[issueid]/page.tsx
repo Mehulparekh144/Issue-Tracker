@@ -1,6 +1,5 @@
 "use client";
-import React from "react";
-import { PageProps } from "../../../../../.next/types/app/layout";
+import React, { useState } from "react";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { trpc } from "@/app/_trpc/client";
 import { Loader2 } from "lucide-react";
@@ -16,14 +15,62 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import ImagesModal from "@/components/dashboard/ImagesModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import z from "zod";
+
+interface PageProps {
+  params: {
+    issueid: string;
+  };
+}
 
 function IssuePage({ params }: PageProps) {
   const searchParams = useSearchParams();
+  const utils = trpc.useContext();
   const router = useRouter();
   const teamID = searchParams.get("teamId");
   const { issueid } = params;
+  const [isPriorityChanging, setIsPriorityChanging] = useState<string | null>(
+    null
+  );
+  const [isStatusChanging, setIsStatusChanging] = useState<string | null>(null);
   const { data, error, isLoading } = trpc.getIssueById.useQuery({
     issueId: issueid,
+  });
+  const { mutate: changePriorityMutate } = trpc.changeIssuePriority.useMutation(
+    {
+      onSuccess() {
+        utils.getIssueById.invalidate();
+      },
+      onMutate({ issueId }) {
+        setIsPriorityChanging(issueId);
+      },
+      onSettled() {
+        setIsPriorityChanging(null);
+      },
+      onError() {
+        toast.error("Internal server error");
+      },
+    }
+  );
+
+  const { mutate: changeStatusMutate } = trpc.changeIssueStatus.useMutation({
+    onSuccess() {
+      utils.getIssueById.invalidate();
+    },
+    onMutate({ issueId }) {
+      setIsStatusChanging(issueId);
+    },
+    onSettled() {
+      setIsStatusChanging(null);
+    },
+    onError() {
+      toast.error("Internal server error");
+    },
   });
 
   const priorityObject: { [key: string]: string } = {
@@ -52,6 +99,21 @@ function IssuePage({ params }: PageProps) {
     toast.error("Resource not found");
   }
 
+  //@ts-ignore
+  const changePriorityHandler = (issueId: string, priority) => {
+    changePriorityMutate({
+      issueId: issueId,
+      priority: priority,
+    });
+  };
+  //@ts-ignore
+  const changeStatusHandler = (issueId: string, status) => {
+    changeStatusMutate({
+      issueId: issueId,
+      status: status,
+    });
+  };
+
   return (
     <MaxWidthWrapper>
       {isLoading && isTeamLoading ? (
@@ -69,24 +131,70 @@ function IssuePage({ params }: PageProps) {
                   {data.issueTitle}
                 </h1>
                 <div className="flex gap-1 items-center justify-center">
-                  <Badge
-                    className={`${priorityObject[data.priority]} hover:bg-${
-                      priorityObject[data.priority]
-                    }`}
-                  >
-                    {data.priority}
-                  </Badge>
-                  <Badge
-                    className={`${statusObject[data.status]} hover:bg-${
-                      statusObject[data.status]
-                    }`}
-                  >
-                    {data.status}
-                  </Badge>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Button
+                        size={"sm"}
+                        disabled={isPriorityChanging === issueid}
+                        className={`${priorityObject[data.priority]} hover:bg-${
+                          priorityObject[data.priority]
+                        }`}
+                      >
+                        {isPriorityChanging === issueid && (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        )}
+                        {data.priority}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="flex flex-col gap-1 items-center justify-start">
+                      {Object.keys(priorityObject)
+                        .filter((value) => value != data.priority)
+                        .map((item, index) => (
+                          <Button
+                            onClick={() => changePriorityHandler(issueid, item)}
+                            key={index}
+                            size={"sm"}
+                            className={`${priorityObject[item]} hover:bg-${priorityObject[item]}`}
+                          >
+                            {item}
+                          </Button>
+                        ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Button
+                        size={"sm"}
+                        disabled={isStatusChanging === issueid}
+                        className={`${statusObject[data.status]} hover:bg-${
+                          statusObject[data.status]
+                        }`}
+                      >
+                        {isStatusChanging === issueid && (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        )}
+                        {data.status}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="flex flex-col gap-1 items-center justify-start">
+                      {Object.keys(statusObject)
+                        .filter((value) => value != data.status)
+                        .map((item, index) => (
+                          <Button
+                            onClick={() => changeStatusHandler(issueid, item)}
+                            key={index}
+                            size={"sm"}
+                            className={`${statusObject[item]} hover:bg-${statusObject[item]}`}
+                          >
+                            {item}
+                          </Button>
+                        ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
               <Separator className="my-2" />
-              <blockquote className="text-xs md:text-sm italic text-zinc-600">
+              <div className="text-xs md:text-sm italic text-zinc-600">
                 Assigned by -{" "}
                 <UserToolTip
                   name={data.assigner.name ?? ""}
@@ -100,7 +208,7 @@ function IssuePage({ params }: PageProps) {
                       new Date()
                     )} days ago`
                   : "today"}
-              </blockquote>
+              </div>
               <h2 className="text-sm mt-4 md:text-base text-zinc-800 dark:text-zinc-300">
                 {data.issueDescription}
               </h2>
