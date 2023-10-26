@@ -4,11 +4,20 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { signIn } from "next-auth/react";
 import { Button } from "../ui/button";
-import { LoginValidationSchema, loginValidationSchema } from "@/lib/formValidation";
+import {
+  LoginValidationSchema,
+  loginValidationSchema,
+} from "@/lib/formValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-function Login() {
+function Login({
+  setIsOpen,
+}: {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const {
     register,
     handleSubmit,
@@ -17,11 +26,22 @@ function Login() {
     resolver: zodResolver(loginValidationSchema),
   });
 
-  const loginHandler: SubmitHandler<LoginValidationSchema> = (data) => {
-    signIn("credentials", {
+  const router = useRouter();
+
+  const loginHandler: SubmitHandler<LoginValidationSchema> = async (data) => {
+    const res = await signIn("credentials", {
       ...data,
-      callbackUrl : "/dashboard"
+      redirect: false,
     });
+    if (res?.ok) {
+      router.push("/dashboard");
+      setIsOpen(false);
+    }
+    if (res?.status === 401) {
+      toast.error("Invalid credentials");
+    } else if (res?.error && res?.status != 401) {
+      toast.error("Internal server error");
+    }
   };
   return (
     <form

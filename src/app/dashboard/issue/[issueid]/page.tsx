@@ -234,7 +234,7 @@ function IssuePage({ params }: PageProps) {
                   </div>
                 </div>
                 <Separator className="my-2" />
-                <div className="text-xs md:text-sm italic text-zinc-600">
+                <div className="text-xs flex gap-1 md:text-sm italic text-zinc-600">
                   Assigned by -{" "}
                   <Suspense>
                     <UserToolTip
@@ -321,7 +321,7 @@ function IssuePage({ params }: PageProps) {
                 )}
               </div>
 
-              <div className="flex  md:mt-0 ml-0 md:ml-4 flex-row flex-wrap md:flex-col gap-4 md:gap-1  items-start justify-center md:items-start md:justify-between">
+              <div className="flex  md:mt-0 ml-0 md:ml-4 flex-row flex-wrap md:flex-col gap-4 md:gap-3  items-start justify-center md:items-start md:justify-start">
                 <div>
                   <h1 className="text-sm md:text-base text-center font-semibold">
                     Deadline Date{" "}
@@ -351,7 +351,7 @@ function IssuePage({ params }: PageProps) {
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-sm mb-2 md:text-base text-center font-semibold">
+                  <h1 className="text-sm mb-2 md:text-base font-semibold">
                     {data.teamAssigned.name}
                   </h1>
                   <div className="flex flex-col gap-2 w-full items-start justify-center">

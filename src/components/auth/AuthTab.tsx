@@ -31,7 +31,7 @@ function AuthTab({
         <TabsTrigger value="register">Register</TabsTrigger>
       </TabsList>
       <TabsContent value="login">
-        <Login />
+        <Login setIsOpen = {setIsOpen} />
       </TabsContent>
       <TabsContent value="register">
         <Signup setIsOpen={setIsOpen}/>
