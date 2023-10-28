@@ -9,10 +9,9 @@ import { Toaster } from "sonner";
 import CustomToaster from "@/components/CustomToaster";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
-import Footer from "@/components/Footer";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"] });
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,7 +23,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
   return (
     <html lang="en">
       <body
@@ -32,6 +31,7 @@ export default async function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="light">
           <Providers>
+            <NextTopLoader showSpinner={false} color="#21b357" zIndex={1600} />
             <Navbar session={session} />
             {children}
             <CustomToaster />
