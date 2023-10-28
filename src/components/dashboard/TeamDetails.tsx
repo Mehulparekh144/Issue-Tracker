@@ -150,7 +150,7 @@ function TeamDetails({ team }: { team: TeamProps }) {
                     onClick={() => removeTeamMemberHandler(team.id, user.id)}
                     variant={"destructive"}
                     size={"icon"}
-                    disabled={deleting === user.id}
+                    disabled={deleting === user.id || team.size === 1}
                   >
                     {deleting === user.id ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -197,7 +197,7 @@ function TeamDetails({ team }: { team: TeamProps }) {
               <Button
                 size={"icon"}
                 onClick={() => addTeamMemberHandler(team.id, indUser)}
-                disabled={adding === indUser}
+                disabled={adding === indUser }
               >
                 {adding === indUser ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

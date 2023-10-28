@@ -42,12 +42,50 @@ export const appRouter = router({
   })
   ,
 
-  getAllUsers : adminProcedure.query(async ()=>{
+  getAllUsers: adminProcedure.query(async () => {
     try {
       const dbUsers = await db.user.findMany()
       return dbUsers
     } catch (error) {
-      throw new TRPCError({code : "INTERNAL_SERVER_ERROR"})
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
+    }
+  }),
+
+  deleteUser: adminProcedure.input(z.object({
+    id: z.string()
+  })).mutation(async ({ input }) => {
+    const { id } = input
+    try {
+      const dbUser = await db.user.findUnique({
+        where: {
+          id: id
+        }
+      })
+      if (!dbUser) {
+        throw new TRPCError({ code: "NOT_FOUND" })
+      }
+      await db.user.delete({
+        where: {
+          id: id
+        }
+      })
+
+      if (dbUser.teamId) {
+        await db.team.update({
+          data: {
+            size: {
+              decrement: 1
+            }
+          }
+          ,
+          where: {
+            id: dbUser.teamId
+          }
+        })
+      }
+      return { status: true }
+    } catch (error) {
+      throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" })
     }
   }),
 
@@ -441,22 +479,22 @@ export const appRouter = router({
   })
   ,
 
-  getUserInfo : privateProcedure.input(z.object({
-    id : z.string()
-  })).query(async ({input})=>{
-    const {id} = input
+  getUserInfo: privateProcedure.input(z.object({
+    id: z.string()
+  })).query(async ({ input }) => {
+    const { id } = input
     try {
       const dbUser = await db.user.findUnique({
-        where : {
-          id : id
+        where: {
+          id: id
         },
-        include : {
-          team : true,
-          issues : true
+        include: {
+          team: true,
+          issues: true
         }
       })
-      if(!dbUser){
-        throw new TRPCError({code : "NOT_FOUND"})
+      if (!dbUser) {
+        throw new TRPCError({ code: "NOT_FOUND" })
       }
       return dbUser
     } catch (error) {

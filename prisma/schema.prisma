@@ -85,7 +85,7 @@ model Issue {
   id               String   @id @default(cuid()) @map("_id")
   issueTitle       String
   issueDescription String
-  teamAssigned     Team     @relation(fields: [teamAssignedId], references: [id])
+  teamAssigned     Team     @relation(fields: [teamAssignedId], references: [id], onDelete: Cascade)
   assigner         User     @relation(fields: [assignerId], references: [id])
   assignedDate     DateTime
   deadlineDate     DateTime
@@ -99,7 +99,7 @@ model Issue {
 model Team {
   id     String  @id @default(cuid()) @map("_id")
   name   String
-  size   Int     @default(0)
+  size   Int     @default(0) 
   users  User[]
   issues Issue[]
 }

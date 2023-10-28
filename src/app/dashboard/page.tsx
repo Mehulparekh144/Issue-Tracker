@@ -13,13 +13,13 @@ function Dashboard() {
   
   return (
     <MaxWidthWrapper className="mt-10 max-w-screen flex flex-col space-y-3 items-start justify-center">
-      <h1 className="text-2xl font-display">Dashboard</h1>
+      <h1 className="text-xl md:text-2xl font-display">Dashboard</h1>
       <div className="w-full">
         <ScrollArea>
           <Suspense fallback={<div>Loading ....</div>}>
-        <IssueTable />
+            <IssueTable />
           </Suspense>
-        <ScrollBar orientation="horizontal"/> 
+          <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
     </MaxWidthWrapper>

@@ -151,9 +151,11 @@ function IssueTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data && data?.length > 0 &&
+            {data &&
+              data?.length > 0 &&
               data.map((item, index) => (
                 <TableRow
+                  className="cursor-pointer"
                   onClick={() =>
                     redirectToIssuePage(item.id, item.teamAssignedId)
                   }
