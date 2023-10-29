@@ -119,7 +119,7 @@ function ManageUsers() {
                           <DeleteUser
                             userId={item.id}
                             name={item.name ?? ""}
-                            user={session.data ? session.data?.user : null}
+                            adminId={session.data?.user.id}
                           />
                         </TableCell>
                       </TableRow>

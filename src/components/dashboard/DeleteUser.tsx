@@ -15,22 +15,15 @@ import { Button } from "../ui/button";
 import { trpc } from "@/app/_trpc/client";
 import { toast } from "sonner";
 import { UserRole } from "@prisma/client";
-interface UserProps {
-  id: string;
-  email: string;
-  role: UserRole;
-  image: string | null;
-  name: string | null | undefined;
-}
 
 function DeleteUser({
   userId,
   name,
-  user,
+  adminId,
 }: {
   userId: string;
   name: string;
-  user: UserProps | null;
+  adminId: string | undefined;
 }) {
   const [deleting, setDeleting] = useState<string | null>("");
   const utils = trpc.useContext();
@@ -72,7 +65,7 @@ function DeleteUser({
       <AlertDialogTrigger asChild>
         <Button
           onClick={() => setIsOpen(true)}
-          disabled={user?.id === userId}
+          disabled={adminId === userId}
           variant={"destructive"}
           size={"icon"}
         >
