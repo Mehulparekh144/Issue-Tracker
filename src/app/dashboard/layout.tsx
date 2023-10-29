@@ -25,7 +25,7 @@ export default async function layout({
     redirect("/auth-callback?origin=dashboard");
   } else if (session.user) {
     return (
-      <div className="flex relative max-w-screen">
+      <div className="flex relative max-w-screen h-full">
         <DashboardNav
           role={session.user.role}
           image={session.user.image ?? ""}

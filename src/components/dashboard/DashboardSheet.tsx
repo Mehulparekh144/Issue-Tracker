@@ -67,12 +67,12 @@ function DashboardSheet({ image, email, name, role }: UserProps) {
       }}
     >
       <SheetTrigger
-        className="lg:hidden absolute top-1"
+        className="lg:hidden absolute top-2 left-2 shadow-md "
         onClick={() => setIsOpen(true)}
         asChild
       >
-        <Button variant={"ghost"} size={"sm"}>
-          <Grip />
+        <Button size={"icon"}>
+          <Grip className="w-6 h-6" />
         </Button>
       </SheetTrigger>
       <SheetContent className="md:w-screen" side={"left"}>
@@ -81,21 +81,37 @@ function DashboardSheet({ image, email, name, role }: UserProps) {
             {navItems.map((item) => {
               const isActive = pathName === item.link;
 
-              return (
-                <Link
-                  href={item.link}
-                  key={item.name}
-                  onClick={() => setIsOpen(false)}
-                  className={`px-2 py-4 w-full text-sm flex items-center gap-3  ${
-                    isActive
-                      ? "bg-white text-primary font-semibold dark:bg-[#121212]"
-                      : " dark:hover:bg-white/10 hover:bg-black/10"
-                  }`}
-                >
-                  {item.icon}
-                  {item.name}
-                </Link>
-              );
+              if (item.isAdmin && role === "ADMIN") {
+                return (
+                  <Link
+                    href={item.link}
+                    key={item.name}
+                    className={`px-2 py-4 w-full text-sm flex items-center gap-3  ${
+                      isActive
+                        ? "bg-white text-primary font-semibold dark:bg-[#121212]"
+                        : " dark:hover:bg-white/10 hover:bg-black/10"
+                    } `}
+                  >
+                    {item.icon}
+                    {item.name}
+                  </Link>
+                );
+              } else if (!item.isAdmin) {
+                return (
+                  <Link
+                    href={item.link}
+                    key={item.name}
+                    className={`px-2 py-4 w-full text-sm flex items-center gap-3  ${
+                      isActive
+                        ? "bg-white text-primary font-semibold dark:bg-[#121212]"
+                        : " dark:hover:bg-white/10 hover:bg-black/10"
+                    } `}
+                  >
+                    {item.icon}
+                    {item.name}
+                  </Link>
+                );
+              }
             })}
           </div>
           <div className="mb-4 flex w-full items-center gap-4 px-4">
