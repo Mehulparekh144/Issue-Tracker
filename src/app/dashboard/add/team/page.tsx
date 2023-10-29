@@ -24,6 +24,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { UserObjectSchema } from "@/lib/schemas/userSchema";
 import { useRouter } from "next/navigation";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 function AddTeamPage() {
   const { data: users, isLoading, error } = trpc.getUsersWithNoTeam.useQuery();
@@ -120,26 +121,29 @@ function AddTeamPage() {
                   }
                 />
               </SelectTrigger>
-              <SelectContent>
-                {users &&
-                  users.map((item) => {
-                    if (!selectedUsers.some((user) => user.id === item.id)) {
-                      return (
-                        <>
-                          <SelectItem
-                            key={item.id}
-                            value={JSON.stringify(item)}
-                          >
-                            <UserSelectItem
-                              email={item.email ?? ""}
-                              name={item.name ?? ""}
-                              image={item.image ?? ""}
-                            />
-                          </SelectItem>
-                        </>
-                      );
-                    }
-                  })}
+              <SelectContent className="w-full h-40">
+                <ScrollArea>
+                  {users &&
+                    users.map((item) => {
+                      if (!selectedUsers.some((user) => user.id === item.id)) {
+                        return (
+                          <>
+                            <SelectItem
+                              key={item.id}
+                              value={JSON.stringify(item)}
+                            >
+                              <UserSelectItem
+                                email={item.email ?? ""}
+                                name={item.name ?? ""}
+                                image={item.image ?? ""}
+                              />
+                            </SelectItem>
+                          </>
+                        );
+                      }
+                    })}
+                  <ScrollBar />
+                </ScrollArea>
               </SelectContent>
             </Select>
           </div>
