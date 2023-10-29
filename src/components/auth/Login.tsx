@@ -44,41 +44,52 @@ function Login({
     }
   };
   return (
-    <form
-      className="flex flex-col gap-2 justify-center items-center"
-      onSubmit={handleSubmit(loginHandler)}
-    >
-      <div className="w-full">
-        <Label>Email</Label>
-        <Input
-          className={`mt-1 ${errors.email && "outline-2 outline-red-600"}`}
-          type="email"
-          placeholder="jd@mail.com"
-          {...register("email")}
-        />
-        {errors.email && (
-          <p className="text-destructive font-semibold mt-1 text-xs">
-            {errors.email.message}
-          </p>
-        )}
+    <>
+      <form
+        className="flex flex-col gap-2 justify-center items-center"
+        onSubmit={handleSubmit(loginHandler)}
+      >
+        <div className="w-full">
+          <Label>Email</Label>
+          <Input
+            className={`mt-1 ${errors.email && "outline-2 outline-red-600"}`}
+            type="email"
+            placeholder="jd@mail.com"
+            {...register("email")}
+          />
+          {errors.email && (
+            <p className="text-destructive font-semibold mt-1 text-xs">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
+        <div className="w-full">
+          <Label>Password</Label>
+          <Input
+            className={`mt-1 ${errors.password && "outline-2 outline-red-600"}`}
+            type="password"
+            {...register("password")}
+          />
+          {errors.password && (
+            <p className="text-destructive font-semibold mt-1 text-xs">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+        <Button type="submit" variant={"default"} className="w-full my-4">
+          Log in
+        </Button>
+      </form>
+      <div className="flex flex-col gap-1">
+        <h1 className="text-base">Test Credentials</h1>
+        <p className="text-sm text-muted-foreground">
+          test@workmail.com - Test@123
+        </p>
+        <p className="text-sm text-muted-foreground">
+          testadmin@mail.com - TestAdmin@123
+        </p>
       </div>
-      <div className="w-full">
-        <Label>Password</Label>
-        <Input
-          className={`mt-1 ${errors.password && "outline-2 outline-red-600"}`}
-          type="password"
-          {...register("password")}
-        />
-        {errors.password && (
-          <p className="text-destructive font-semibold mt-1 text-xs">
-            {errors.password.message}
-          </p>
-        )}
-      </div>
-      <Button type="submit" variant={"default"} className="w-full my-4">
-        Log in
-      </Button>
-    </form>
+    </>
   );
 }
 

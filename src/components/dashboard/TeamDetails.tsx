@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import UserSelectItem from "./UserSelectItem";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface UserProps {
   image: string | null;
@@ -177,27 +178,29 @@ function TeamDetails({ team }: { team: TeamProps }) {
                   }
                 />
               </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {users?.map((user) => (
-                    <>
-                      <SelectItem key={user.id} value={user.id}>
-                        <UserSelectItem
-                          email={user.email ?? ""}
-                          name={user.name ?? ""}
-                          image={user.image ?? ""}
-                        />
-                      </SelectItem>
-                    </>
-                  ))}
-                </SelectGroup>
+              <SelectContent className="w-full h-40">
+                <ScrollArea>
+                  <SelectGroup>
+                    {users?.map((user) => (
+                      <>
+                        <SelectItem key={user.id} value={user.id}>
+                          <UserSelectItem
+                            email={user.email ?? ""}
+                            name={user.name ?? ""}
+                            image={user.image ?? ""}
+                          />
+                        </SelectItem>
+                      </>
+                    ))}
+                  </SelectGroup>
+                </ScrollArea>
               </SelectContent>
             </Select>
             {indUser && (
               <Button
                 size={"icon"}
                 onClick={() => addTeamMemberHandler(team.id, indUser)}
-                disabled={adding === indUser }
+                disabled={adding === indUser}
               >
                 {adding === indUser ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -216,7 +219,7 @@ function TeamDetails({ team }: { team: TeamProps }) {
             team.issues.map((issue) => (
               <Link
                 key={issue.id}
-                href={"/dashboard/issue/" + issue.id + "?teamId=" + team.id }
+                href={"/dashboard/issue/" + issue.id + "?teamId=" + team.id}
                 className="text-sm underline"
               >
                 {issue.issueTitle}

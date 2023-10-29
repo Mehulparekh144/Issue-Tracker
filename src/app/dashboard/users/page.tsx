@@ -24,7 +24,6 @@ function ManageUsers() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 5;
   let maxPages = 0;
-  
 
   const lastIndex = currentPage * rowsPerPage;
   const firstIndex = lastIndex - rowsPerPage;
@@ -38,15 +37,18 @@ function ManageUsers() {
     ADMIN: 0,
     USER: 1,
   };
-  const currentData = data ? data.slice(firstIndex, lastIndex) : [];
-  if(data && data.length > 0){
-    maxPages = Math.ceil(data.length / rowsPerPage)
-  }
+
   if (isFetched) {
-    currentData?.sort((a, b) => {
+    data?.sort((a, b) => {
+      if (a.id === session.data?.user.id) return -1;
+      if (b.id === session.data?.user.id) return 1;
       const difference = roleObject[a.role] - roleObject[b.role];
       return difference;
     });
+  }
+  const currentData = data ? data.slice(firstIndex, lastIndex) : [];
+  if (data && data.length > 0) {
+    maxPages = Math.ceil(data.length / rowsPerPage);
   }
 
   return (
@@ -156,7 +158,11 @@ function ManageUsers() {
           onClick={() => setCurrentPage(currentPage + 1)}
           size={"icon"}
           aria-label="Next"
-          disabled={currentPage === maxPages || data?.length === rowsPerPage || isLoading}
+          disabled={
+            currentPage === maxPages ||
+            data?.length === rowsPerPage ||
+            isLoading
+          }
         >
           <MoveRight className="h-4 w-4" />
         </Button>

@@ -180,12 +180,20 @@ function IssueTable() {
                           : "secondary"
                       }
                     >
-                      Due in{" "}
                       {differenceInDays(
                         new Date(item.deadlineDate),
                         new Date()
-                      )}{" "}
-                      Days
+                      ) === 0
+                        ? "Due Today"
+                        : differenceInDays(
+                            new Date(item.deadlineDate),
+                            new Date()
+                          ) < 0
+                        ? "Past Due"
+                        : `Due  in ${differenceInDays(
+                            new Date(item.deadlineDate),
+                            new Date()
+                          )} days`}
                     </Badge>
                   </TableCell>
                   <TableCell>
