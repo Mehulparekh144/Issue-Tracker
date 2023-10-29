@@ -14,11 +14,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Trash } from "lucide-react";
-import React from "react";
+import { MoveLeft, MoveRight, Trash } from "lucide-react";
+import { useSession } from "next-auth/react";
+import React, { useState } from "react";
 
-function page() {
+function ManageUsers() {
   const { data, isLoading, error, isFetched } = trpc.getAllUsers.useQuery();
+  const session = useSession();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const rowsPerPage = 5;
+  let maxPages = 0;
+  if (data && data.length > 0) {
+    maxPages = data.length % rowsPerPage;
+  }
+
+  const lastIndex = currentPage * rowsPerPage;
+  const firstIndex = lastIndex - rowsPerPage;
+
   const roleColor = {
     ADMIN: "bg-red-500 hover:bg-red-500/90",
     USER: "bg-primary",
@@ -28,20 +40,18 @@ function page() {
     ADMIN: 0,
     USER: 1,
   };
+  const currentData = data ? data.slice(firstIndex, lastIndex) : [];
   if (isFetched) {
-    data?.sort((a, b) => {
+    currentData?.sort((a, b) => {
       const difference = roleObject[a.role] - roleObject[b.role];
       return difference;
     });
   }
-  // To add table
-  // Horizontal scrollbar
-  // Pagination for 5 users per page
 
   return (
     <MaxWidthWrapper className="mt-10 max-w-screen flex flex-col space-y-3 items-start justify-center">
       <h1 className="text-xl md:text-2xl font-display">Manage Users</h1>
-      <div className="w-full">
+      <div className="w-full h-[300px]">
         <ScrollArea>
           <Table className="w-full">
             {isLoading ? (
@@ -60,19 +70,19 @@ function page() {
                     <TableRow key={index}>
                       {isLoading && (
                         <>
-                          <TableCell className="py-4 w-20">
+                          <TableCell className="py-3 w-20">
                             <Skeleton className="h-4 w-3" />
                           </TableCell>
-                          <TableCell className="py-4 w-40">
+                          <TableCell className="py-3 w-40">
                             <Skeleton className="h-4  w-full" />
                           </TableCell>
-                          <TableCell className="py-4 w-60">
+                          <TableCell className="py-3 w-60">
                             <Skeleton className="h-4  w-full" />
                           </TableCell>
-                          <TableCell className="py-4 w-40">
+                          <TableCell className="py-3 w-40">
                             <Skeleton className="h-6 w-14" />
                           </TableCell>
-                          <TableCell className="py-4 text-center w-20">
+                          <TableCell className="py-3 text-center w-20">
                             <Skeleton className="h-8 w-8" />
                           </TableCell>
                         </>
@@ -93,9 +103,9 @@ function page() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data &&
-                    data?.length > 0 &&
-                    data.map((item, index) => (
+                  {currentData &&
+                    currentData?.length > 0 &&
+                    currentData.map((item, index) => (
                       <TableRow key={item.id}>
                         <TableCell className="w-20">{index + 1}</TableCell>
                         <TableCell className="w-40">{item.name}</TableCell>
@@ -106,7 +116,11 @@ function page() {
                           </Badge>
                         </TableCell>
                         <TableCell className="w-20">
-                          <DeleteUser userId={item.id} name={item.name??""}/>
+                          <DeleteUser
+                            userId={item.id}
+                            name={item.name ?? ""}
+                            user={session.data ? session.data?.user : null}
+                          />
                         </TableCell>
                       </TableRow>
                     ))}
@@ -117,8 +131,37 @@ function page() {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
+      <div className="flex justify-between items-center gap-2 w-full pt-6">
+        <Button
+          onClick={() => setCurrentPage(currentPage - 1)}
+          size={"icon"}
+          aria-label="Back"
+          disabled={currentPage <= 1 || isLoading}
+        >
+          <MoveLeft className="h-4 w-4" />
+        </Button>
+        <div>
+          {Array.from({ length: maxPages }).map((_, index) => (
+            <Button
+              key={index}
+              variant={currentPage === index + 1 ? "default" : "ghost"}
+              onClick={() => setCurrentPage(index + 1)}
+            >
+              {index + 1}
+            </Button>
+          ))}
+        </div>
+        <Button
+          onClick={() => setCurrentPage(currentPage + 1)}
+          size={"icon"}
+          aria-label="Next"
+          disabled={currentPage === maxPages || isLoading}
+        >
+          <MoveRight className="h-4 w-4" />
+        </Button>
+      </div>
     </MaxWidthWrapper>
   );
 }
 
-export default page;
+export default ManageUsers;

@@ -1,53 +1,81 @@
 import React, { useState } from "react";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 import { Loader2, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { trpc } from "@/app/_trpc/client";
 import { toast } from "sonner";
+import { UserRole } from "@prisma/client";
+interface UserProps {
+  id: string;
+  email: string;
+  role: UserRole;
+  image: string | null;
+  name: string | null | undefined;
+}
 
-
-function DeleteUser({userId , name} : {userId : string , name : string}) {
-  const [deleting , setDeleting] = useState<string|null>("");
+function DeleteUser({
+  userId,
+  name,
+  user,
+}: {
+  userId: string;
+  name: string;
+  user: UserProps | null;
+}) {
+  const [deleting, setDeleting] = useState<string | null>("");
   const utils = trpc.useContext();
-  const [isOpen , setIsOpen] = useState<boolean>(false) ;
-  const {mutate : deleteUserMutate} = trpc.deleteUser.useMutation({
-    onMutate({id}){
-      setDeleting(id)
-    }
-    ,
-    onSettled(){
-      setDeleting(null)
-      utils.getAllUsers.invalidate()
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { mutate: deleteUserMutate } = trpc.deleteUser.useMutation({
+    onMutate({ id }) {
+      setDeleting(id);
+    },
+    onSettled() {
+      setDeleting(null);
+      utils.getAllUsers.invalidate();
       toast.success("User deleted Successfully");
-      setIsOpen(false)
-    }
-    ,
-    onError(error){
-      if(error.data?.code === 'NOT_FOUND'){
-        toast.error("User doesn't exists")
+      setIsOpen(false);
+    },
+    onError(error) {
+      if (error.data?.code === "NOT_FOUND") {
+        toast.error("User doesn't exists");
+      } else {
+        toast.error("Internal Server Error");
       }
-      else{
-        toast.error("Internal Server Error")
-      }
-    }
+    },
   });
 
-  const deleteUserHandler = (userId : string) =>{
+  const deleteUserHandler = (userId: string) => {
     deleteUserMutate({
-      id : userId
-    })
-  }
+      id: userId,
+    });
+  };
 
   return (
-    <AlertDialog 
-    open = {isOpen}
-    onOpenChange={(v)=>{
-      if(!v){
-        setIsOpen(v)
-      }
-    }}>
+    <AlertDialog
+      open={isOpen}
+      onOpenChange={(v) => {
+        if (!v) {
+          setIsOpen(v);
+        }
+      }}
+    >
       <AlertDialogTrigger asChild>
-        <Button onClick={()=>setIsOpen(true)} variant={"destructive"} size={"icon"}>
+        <Button
+          onClick={() => setIsOpen(true)}
+          disabled={user?.id === userId}
+          variant={"destructive"}
+          size={"icon"}
+        >
           <Trash className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>
@@ -56,9 +84,11 @@ function DeleteUser({userId , name} : {userId : string , name : string}) {
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription asChild>
             <>
-            <p className="text-bold text-red-500">You are deleting {name}&apos;s account </p>
-            This action cannot be undone. This will permanently delete the team
-            and remove it from the database.
+              <p className="text-bold text-red-500">
+                You are deleting {name}&apos;s account{" "}
+              </p>
+              This action cannot be undone. This will permanently delete the
+              team and remove it from the database.
             </>
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -66,7 +96,7 @@ function DeleteUser({userId , name} : {userId : string , name : string}) {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              deleteUserHandler(userId)
+              deleteUserHandler(userId);
             }}
             disabled={deleting === userId}
           >
