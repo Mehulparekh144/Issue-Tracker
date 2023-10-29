@@ -15,7 +15,6 @@ import { toast } from "sonner";
 function Teams() {
   const { data: teams, isLoading, error } = trpc.getTeams.useQuery();
   const { data } = useSession();
-  console.log(teams);
   if (error) {
     toast.error("Error loading teams");
   }
@@ -46,7 +45,7 @@ function Teams() {
                 ))}
               </div>
               <div className="flex gap-2 mt-3 w-full">
-                <TeamDetails team={item}/>
+                <TeamDetails team={item} />
                 {data?.user.role === "ADMIN" && (
                   <DeleteTeamButton name={item.name} teamId={item.id} />
                 )}
@@ -66,10 +65,12 @@ function Teams() {
         </div>
       ) : (
         <div className="flex text-primary w-full flex-col items-center pt-24 justify-center">
-            <Ghost className="h-12 w-12"/>
+          <Ghost className="h-12 w-12" />
 
           <h1 className="text-muted-foreground mt-2 ">No Teams here</h1>
-          <Link className="text-sm" href="/dashboard/add/team">Click to create one</Link>
+          <Link className="text-sm" href="/dashboard/add/team">
+            Click to create one
+          </Link>
         </div>
       )}
     </MaxWidthWrapper>

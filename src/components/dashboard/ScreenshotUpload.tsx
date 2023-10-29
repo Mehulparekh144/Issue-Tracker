@@ -25,7 +25,24 @@ function ScreenshotUpload({
 }: ImageStateProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<string | null>("");
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
   const { startUpload } = useUploadThing("imageUploader");
+
+  const simulatedProgress = () => {
+    setUploadProgress(0);
+
+    const interval = setInterval(() => {
+      setUploadProgress((prev) => {
+        if (prev >= 95) {
+          clearInterval(interval);
+          return prev;
+        }
+        return prev + 5;
+      });
+    }, 100);
+    return interval;
+  };
+
   const { mutate: startPolling } = trpc.getTempFile.useMutation({
     onSuccess: (file) => {
       setSelectedFiles((prev) => [...prev, file]);
@@ -58,6 +75,7 @@ function ScreenshotUpload({
       },
       onDrop: async (accepted) => {
         setIsLoading(true);
+        const progressInterval = simulatedProgress();
         const res = await startUpload(accepted);
         if (!res) {
           toast.error("File not uploaded. Internal Server error");
@@ -70,6 +88,8 @@ function ScreenshotUpload({
           toast.error("File not uploaded. Internal Server error");
         }
         setIsLoading(false);
+        clearInterval(progressInterval);
+        setUploadProgress(100);
         startPolling({ key });
       },
     });
@@ -86,20 +106,23 @@ function ScreenshotUpload({
       >
         <input {...getInputProps()} />
         <div className="flex flex-col items-center justify-center">
+          <div>
+            <Cloud
+              className={`h-10 w-10 text-zinc-700 dark:text-zinc-200 ${
+                isLoading ? "animate-bounce" : ""
+              }`}
+            />
+          </div>
           {isLoading ? (
             <>
-              <div>
-                <Loader2 className="h-10 w-10 animate-spin text-zinc-700 dark:text-zinc-200" />
-              </div>
               <div className="text-center">
-                <h1 className="text-primary font-semibold">Uploading....</h1>
+                <h1 className="text-primary font-semibold">
+                  Uploading.... {uploadProgress}%
+                </h1>
               </div>
             </>
           ) : (
             <>
-              <div>
-                <Cloud className="h-10 w-10 text-zinc-700 dark:text-zinc-200" />
-              </div>
               <div className="text-center">
                 <h1 className="text-primary font-semibold">
                   Click to upload or drag and drop (4MB)
