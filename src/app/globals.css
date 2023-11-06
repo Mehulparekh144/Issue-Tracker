@@ -49,25 +49,6 @@
     --input: 240 3.7% 15.9%;
     --ring: 142.4 71.8% 29.2%;
   }
-}
+} 
 
-.home-bg {
-  background-color: #ffffff;
-  opacity: 0.9;
-  background-image: radial-gradient(
-    #efefef 1.1500000000000001px,
-    #ffffff 1.1500000000000001px
-  );
-  background-size: 23px 23px;
-}
-
-.home-dark-bg {
-  background-color: #121212;
-  opacity: 0.9;
-  background-image: radial-gradient(
-    #1c1c1c 1.1500000000000001px,
-    #121212 1.1500000000000001px
-  );
-  background-size: 23px 23px;
-}
 

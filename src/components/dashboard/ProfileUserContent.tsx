@@ -1,9 +1,6 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { UserRole } from "@prisma/client";
-import { Badge } from "../ui/badge";
-import { Edit } from "lucide-react";
-import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
@@ -25,25 +22,19 @@ function ProfileUserContent({ name, email, id, image, role }: UserProps) {
             {name ? name.charAt(0).toUpperCase() : "U"}
           </AvatarFallback>
         </Avatar>
-        <Button
-          size="icon"
-          className="absolute bottom-2 md:bottom-3 md:right-3 right-2 rounded-full"
-        >
-          <Edit className="h-4 w-4" />
-        </Button>
       </div>
       <div className="w-full flex flex-col gap-2 mt-2 ">
         <div>
-        <Label className="text-lg">Name</Label>
-        <Input disabled={true} className="mt-1" value={name??""}/>
+          <Label className="text-lg">Name</Label>
+          <Input disabled={true} className="mt-1" value={name ?? ""} />
         </div>
         <div>
-        <Label className="text-lg">Email</Label>
-        <Input disabled={true} className="mt-1" value={email??""}/>
+          <Label className="text-lg">Email</Label>
+          <Input disabled={true} className="mt-1" value={email ?? ""} />
         </div>
         <div>
-        <Label className="text-lg">Role</Label>
-        <Input disabled={true} className="mt-1" value={role??""}/>
+          <Label className="text-lg">Role</Label>
+          <Input disabled={true} className="mt-1" value={role ?? ""} />
         </div>
       </div>
     </div>
