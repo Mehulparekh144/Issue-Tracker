@@ -21,7 +21,7 @@ function Main() {
         </h1>
       </div>
       <Link
-        href="/"
+        href="/dashboard"
         className={cn(
           buttonVariants({
             variant: "default",
